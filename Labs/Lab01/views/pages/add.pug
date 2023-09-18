@@ -1,0 +1,37 @@
+html(lang="eng")
+    head 
+        title Add 
+
+    body 
+    a(href="/products") Products
+    br
+    h1 Add Product
+    | Name: 
+    input(type="text",id="name")
+    br
+    br
+
+    | Price:
+    input(type="text",id="price")
+    br
+    br
+
+    | Dimensions(x*y*z ):
+    br
+    | x 
+    input(type="text",id="x")
+    br
+    | y 
+    input(type="text",id="y")  
+    br  
+    | z 
+    input(type="text",id="z")
+    br
+    br
+
+    | Stock: 
+    input(type="text",id="stock")
+
+    button(type="button" id="add") Add
+
+script(src="../add.js")

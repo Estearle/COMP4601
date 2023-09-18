@@ -1,0 +1,16 @@
+html(lang="eng")
+    head 
+        title Products
+    
+    body 
+    include ../partials/headers
+    h1 All Products
+    each item in product
+        li Name:#{item.name} (ID:#{item.id}) 
+        |   Price:#{item.price} 
+        br
+        |   dimension:#{item.dimensions.x} x #{item.dimensions.y} x #{item.dimensions.z}
+        br
+        |   stock:#{item.stock}
+        br
+        br
