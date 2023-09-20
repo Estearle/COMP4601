@@ -21,7 +21,7 @@ function searchName() {
             console.log(this.responseText);
             for (let i in this.responseText) {
                 var a = document.createElement('a');
-                a.setAttribute('href', `/${responseItem[i].id}`);
+                a.setAttribute('href', `/products/${responseItem[i].id}`);
                 a.textContent = responseItem[i].name
                 document.getElementById("result").appendChild(a);
                 document.getElementById("result").appendChild(document.createElement("br"));
@@ -45,7 +45,7 @@ function searchAll() {
             console.log(this.responseText);
             for (let i in this.responseText) {
                 var a = document.createElement('a');
-                a.setAttribute('href', `/${responseItem[i].id}`);
+                a.setAttribute('href', `/products/${responseItem[i].id}`);
                 a.textContent = responseItem[i].name
                 document.getElementById("result").appendChild(a);
                 document.getElementById("result").appendChild(document.createElement("br"));
@@ -69,7 +69,7 @@ function searchInStock() {
             console.log(this.responseText);
             for (let i in this.responseText) {
                 var a = document.createElement('a');
-                a.setAttribute('href', `/${responseItem[i].id}`);
+                a.setAttribute('href', `/products/${responseItem[i].id}`);
                 a.textContent = responseItem[i].name
                 document.getElementById("result").appendChild(a);
                 document.getElementById("result").appendChild(document.createElement("br"));

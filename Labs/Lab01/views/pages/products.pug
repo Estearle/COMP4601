@@ -6,11 +6,12 @@ html(lang="eng")
     include ../partials/headers
     h1 All Products
     each item in product
-        li Name:#{item.name} (ID:#{item.id}) 
-        |   Price:#{item.price} 
+        a(href="/products/"+item.id) Name: #{item.name} (ID: #{item.id}) 
         br
-        |   dimension:#{item.dimensions.x} x #{item.dimensions.y} x #{item.dimensions.z}
+        |   Price: $#{item.price} 
         br
-        |   stock:#{item.stock}
+        |   dimension: #{item.dimensions.x} x #{item.dimensions.y} x #{item.dimensions.z}
+        br
+        |   stock: #{item.stock}
         br
         br

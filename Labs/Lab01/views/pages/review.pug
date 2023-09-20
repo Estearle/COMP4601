@@ -1,0 +1,12 @@
+html(lang="eng")
+    head 
+        title Review
+    
+    body 
+    a(href="/products") Products
+    h1 #{product.name} Review ##{review.id + 1}
+    br
+    |   Rating: #{review.rating}/10
+    br
+    |   Comment: #{review.comment}
+    br

@@ -21,6 +21,9 @@ let productID = 0;
 fs.readFile('products.json', 'utf8', function (err, data) {
     product = JSON.parse(data.toString());
     productID = product[product.length-1].id + 1 ;
+    product.forEach((prod) => {
+        prod.reviews = [];
+    })
 })
 
 // store all products 
@@ -152,13 +155,86 @@ function add(req,res,next){
         price: req.body.price,
         dimensions : req.body.dimensions,
         stock : req.body.stock,
-        id : productID
+        id : productID,
+        reviews : []
     };
     product.push(addProduct) ;
     productID++;
     console.log(addProduct);
     res.status(200).json(addProduct);
 }
+
+// view specific product
+app.get("/products/:productID", function(req,res,next){
+    let prodID = req.params.productID;
+
+    if(!product.hasOwnProperty(prodID)) {
+        res.status(404).send("Unknown Product ID " + prodID);
+    }
+
+    let prod = product[prodID];
+    if(req.accepts("text/html")) {
+        res.status(200).render("pages/product.pug", {product : prod})
+    } else if(req.accepts("application/json")) {
+        res.status(200).json(prod);
+    }
+});
+
+// add a review for specific product
+app.post('/products/:productID/reviews', (req, res) => { 
+    let prodID = req.params.productID;
+    console.log("Product ID: " + prodID);
+    if(!product.hasOwnProperty(prodID)) {
+        res.status(404).send("Unknown Product ID " + prodID);
+    }
+    console.log(req.body);
+    let {rating, comment} = req.body;
+
+    if (rating < 1 || rating > 10) {
+        return res.status(400).send("Rating must be between 1 and 10");
+    }
+
+    let id = product[prodID].reviews.length;
+
+    let review = {  id,
+                    rating,
+                    comment  
+    };
+    console.log(review);
+    
+    product[prodID].reviews.push(review);
+    res.status(200).json(review);
+});
+
+// view reviews page
+app.get("/products/:productID/reviews",(req,res)=>{
+    let prodID = req.params.productID;
+    let prod = product[prodID];
+    console.log(prod);
+    res.render("pages/reviews", {product : prod, reviews : prod.reviews });
+})
+
+// view specific review
+app.get("/products/:productID/reviews/:reviewID", function(req,res,next){
+    let prodID = req.params.productID;
+    let revID = req.params.reviewID;
+
+    if(!product.hasOwnProperty(prodID)) {
+        res.status(404).send("Unknown Product ID " + prodID);
+    }
+
+    if(!product.hasOwnProperty(revID)) {
+        res.status(404).send("Unknown Product ID " + revID);
+    }
+
+    let prod = product[prodID];
+    let rev = prod.reviews[revID];
+    if(req.accepts("text/html")) {
+        res.status(200).render("pages/review.pug", {product : prod, review : rev})
+    } else if(req.accepts("application/json")) {
+        res.status(200).json(rev);
+    }
+});
 
 app.listen(3000);
 console.log("Server listening at http://localhost:3000");
