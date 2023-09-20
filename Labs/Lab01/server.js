@@ -55,7 +55,7 @@ app.get('/products', (req, res) => {
         console.log("IN STOCK SEARCH")
         if(Number.isInteger(Number(instock))){
             for(let i in product){
-                if(parseInt(product[i].stock) >= parseInt(instock)){
+                if(parseInt(product[i].stock) >= 1){
                     result.push(product[i]);
                 }
             }
@@ -66,7 +66,7 @@ app.get('/products', (req, res) => {
         console.log("NAME + IN STOCK")
         if (name.length > 0 && Number.isInteger(Number(instock))) {
             for (let i in product) {
-                if (product[i].name.toLowerCase().includes(name.toLowerCase()) && parseInt(product[i].stock) >= parseInt(instock)) {
+                if (product[i].name.toLowerCase().includes(name.toLowerCase()) && parseInt(product[i].stock) >= 1) {
                     result.push(product[i]);
                 }
             }
