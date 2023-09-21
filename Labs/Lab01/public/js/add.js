@@ -10,13 +10,13 @@ function addProduct() {
     let x = Number(document.getElementById("x").value);
     let y = Number(document.getElementById("y").value);
     let z = Number(document.getElementById("z").value);
-    let stock = document.getElementById("stock").value;
+    let stock = Number(document.getElementById("stock").value);
 
     if(name.length === 0 || price.length === 0 || x.length === 0 || y.length === 0|| z.length === 0 || stock.length === 0){
         alert("Missing info.");
         return;
     }
-    if(price == false || x == false || y == false|| z == false){
+    if(price == false || x == false || y == false|| z == false || stock == false){
         alert("You can only type numberes.");
         return;
     }

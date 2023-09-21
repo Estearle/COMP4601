@@ -135,14 +135,16 @@ app.post("/add",[verify,add]);
 function verify(req,res,next){
     //check the JSON string
     if(!req.body){
-        res.status(400).send("JSON body required name,price,dimensions and initial stock quantity.Please check your format");
+        res.status(400).send("(1)JSON body required name,price,dimensions and initial stock quantity.Please check your format");
     }
 
     //Check that each required property exists
     const requiredContents = ["name","price","dimensions","stock"];
+    
     for(let i = 0; i < requiredContents.length;i++){
         if(!req.body.hasOwnProperty(requiredContents[i])){
-            res.status(400).send("JSON body required name,price,dimensions and initial stock quantity.Please check your format");
+            console.log(requiredContents[i]);
+            res.status(400).send("(2)JSON body required name,price,dimensions and initial stock quantity.Please check your format");
             return;
         }
     }
