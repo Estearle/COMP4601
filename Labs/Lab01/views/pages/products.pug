@@ -8,10 +8,4 @@ html(lang="eng")
     each item in product
         a(href="/products/"+item.id) Name: #{item.name} (ID: #{item.id}) 
         br
-        |   Price: $#{item.price} 
-        br
-        |   dimension: #{item.dimensions.x} x #{item.dimensions.y} x #{item.dimensions.z}
-        br
-        |   stock: #{item.stock}
-        br
         br
