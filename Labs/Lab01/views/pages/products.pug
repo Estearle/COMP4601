@@ -1,11 +1,14 @@
 html(lang="eng")
     head 
         title Products
+        style
+            include ../styles.css
     
     body 
     include ../partials/headers
     h1 All Products
-    each item in product
-        a(href="/products/"+item.id) Name: #{item.name} (ID: #{item.id}) 
-        br
-        br
+    div.prod
+        each item in product
+            a(href="/products/"+item.id) #{item.name} (ID: #{item.id})     
+            br
+            br
