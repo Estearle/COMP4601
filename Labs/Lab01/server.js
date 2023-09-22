@@ -36,7 +36,7 @@ app.get('/products', (req, res) => {
 
     // all search 
     if(typeof name === "undefined" && typeof instock === "undefined"){
-        console.log("ALL SEARCH")
+        console.log("ALL SEARCH");
         result = product;
     }
     
@@ -92,7 +92,7 @@ app.post('/search', (req, res) => {
 
     if (name.length > 0 && searchType === "name") {
         // name search + all search (same as name search)
-        if (checked == false) {
+        if (checked === false) {
             for (let i in product) {
                 if (product[i].name.toLowerCase().includes(name.toLowerCase())) {
                     result.push(product[i]);
@@ -101,7 +101,7 @@ app.post('/search', (req, res) => {
         }
 
         // name search + in stock search
-        else if (checked == true) {
+        else if (checked === true) {
             for (let i in product) {
                 if (product[i].name.toLowerCase().includes(name.toLowerCase()) && product[i].stock > 0) {
                     result.push(product[i]);
@@ -109,7 +109,7 @@ app.post('/search', (req, res) => {
             }
         }
     }
-    else if (name.length === 0 && checked === "none") {
+    else if (name.length === 0 && checked === false) {
         //all search  
         if (searchType === "all") {
             result = product;
@@ -124,7 +124,7 @@ app.post('/search', (req, res) => {
         }
     }
     console.log(result);
-    res.json(result);
+    res.status(200).json(result);
 })
 
 // create a new product 

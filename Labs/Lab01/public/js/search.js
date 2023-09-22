@@ -56,7 +56,7 @@ function searchAll() {
     //in the JSON object.
     xhttp.open("POST", `/search`)
     xhttp.setRequestHeader("Content-Type", "application/json");
-    xhttp.send(JSON.stringify({ "name": "" ,"type":"all","checked":"none"}));
+    xhttp.send(JSON.stringify({ "name": "" ,"type":"all","checked":false}));
 }
 
 //Search in stock products
@@ -80,7 +80,7 @@ function searchInStock() {
     //in the JSON object.
     xhttp.open("POST", "/search")
     xhttp.setRequestHeader("Content-Type", "application/json");
-    xhttp.send(JSON.stringify({ "name": "" ,"type":"inStock","checked":"none"}));
+    xhttp.send(JSON.stringify({ "name": "" ,"type":"inStock","checked":false}));
  }
 
 //clear the previous search result 
