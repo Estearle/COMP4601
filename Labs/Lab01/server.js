@@ -26,6 +26,7 @@ fs.readFile('products.json', 'utf8', function (err, data) {
     product.forEach((prod) => {
         prod.reviews = [];
     })
+ 
 })
 
 // store all products 
