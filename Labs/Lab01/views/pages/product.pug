@@ -1,19 +1,15 @@
 html(lang="eng")
     head 
         title Product
-        style
-            include ../styles.css
     
     body 
-    a(class="head" href="/products") Products
-    h2 #{product.name}
-    div.info
-        br
-        |   Price: $#{product.price}
-        br
-        |   Dimensions: #{product.dimensions.x} x #{product.dimensions.y} x #{product.dimensions.z}
-        br
-        |   Stock: #{product.stock}
-        br
-        br
-        a(href="/products/" + product.id + "/reviews/") Reviews
+    a(href="/products") Products
+    h1 #{product.name}
+    br
+    |   Price: $#{product.price}
+    br
+    |   Dimensions: #{product.dimensions.x} x #{product.dimensions.y} x #{product.dimensions.z}
+    br
+    |   Stock: #{product.stock}
+    br
+    a(href="/products/" + product.id + "/reviews/") Reviews

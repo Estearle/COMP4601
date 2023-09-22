@@ -1,33 +1,29 @@
 html(lang="eng")
     head 
         title Product Review
-        style
-            include ../styles.css
     
     body 
-    a(class="head" href="/products") Products
-    h2(id="prodID", name=product.id) #{product.name} Reviews
-    div.review
-        | Rating (1-10): 
-        br
-        input(type="number", id="rating", name="rating", min="1", max="10", required)
-        br
-        | Comment:  
-        br  
-        textarea(id="comment", name="comment", rows="4", required)
-        br
-        button(type="button", id="submit") Submit Review
-        br
+    a(href="/products") Products
+    h1(id="prodID", name=product.id) #{product.name} Reviews
+
+    | Rating (1-10): 
+    br
+    input(type="number", id="rating", name="rating", min="1", max="10", required)
+    br
+    | Comment:  
+    br  
+    textarea(id="comment", name="comment", rows="4", required)
+    br
+    button(type="button", id="submit") Submit Review
+    br
     br
     each review in reviews
-        div.info
-            a(href="/products/" + product.id + "/reviews/" + review.id) Review: #{review.id + 1}
-            br
-            br
-            |   Rating: #{review.rating}/10
-            br
-            |   Comment: #{review.comment}
-            br
-            br
+        a(href="/products/" + product.id + "/reviews/" + review.id) Review: #{review.id + 1}
+        br
+        |   Rating: #{review.rating}/10
+        br
+        |   Comment: #{review.comment}
+        br
+        br
 
 script(src="../../../reviews.js")

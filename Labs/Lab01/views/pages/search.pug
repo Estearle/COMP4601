@@ -1,30 +1,28 @@
 html(lang="eng")
     head 
         title Search
-        style
-            include ../styles.css
     
     body 
-    a(class="head" href="/products") Products
+    a(href="/products") Products
     br
     h1 Product Search
-    div.input
-        button(type="button",id="all") Search All Products
-        button(type="button",id="inStock") Search All In Stock Products
-        br
-        | Product Name: 
-        input(type="text",id="name")
-        br
-        | In Stock: 
-        input(type="checkbox",id="checkInStock")
-        br
-        br
-        button(type="button" id="search") Search 
+
+    button(type="button",id="all") Search All Products
+    button(type="button",id="inStock") Search All In Stock Products
+    br
+    | Product Name: 
+    input(type="text",id="name")
+    br
+    | In Stock: 
+    input(type="checkbox",id="checkInStock")
+    br
+    br
+    button(type="button" id="search") Search 
 
 
-        div(id="result")
-            each item in result 
-                li Name:#{item.name} (ID:#{item.id})
+    div(id="result")
+        each item in result 
+            li Name:#{item.name} (ID:#{item.id})
 
 
     script(src="../search.js")
