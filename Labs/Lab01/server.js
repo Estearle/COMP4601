@@ -5,8 +5,10 @@ const fs = require('fs');
 //process.env.PORT will see if there is a specific port set in the environment
 const PORT = process.env.PORT || 3000
 const ROOT_DIR_JS = '/public/js'; //root directory for javascript files
+const ROOT_DIR_CSS = '/public/css'; //root directory for css files
 
 app.use(express.static(__dirname + ROOT_DIR_JS)) //provide static server
+app.use(express.static(__dirname + ROOT_DIR_CSS)) //provide static server
 
 //convert JSON stringified strings in a POST request to JSON
 app.use(express.json());
