@@ -208,6 +208,7 @@ app.post('/products/:productID/reviews', (req, res) => {
     console.log(review);
     
     product[prodID].reviews.push(review);
+    
     res.status(200).json(review);
 });
 
@@ -216,7 +217,11 @@ app.get("/products/:productID/reviews",(req,res)=>{
     let prodID = req.params.productID;
     let prod = product[prodID];
     console.log(prod);
-    res.render("pages/reviews", {product : prod, reviews : prod.reviews });
+    if(req.accepts("text/html")) {
+        res.status(200).render("pages/reviews", {product : prod, reviews : prod.reviews });
+    } else if(req.accepts("application/json")) {
+        res.status(200).json(prod.reviews);
+    }
 })
 
 // view specific review
