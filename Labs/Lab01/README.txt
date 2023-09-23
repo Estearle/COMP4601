@@ -9,7 +9,7 @@ Lab Reflection Questions
 1. Describe the RESTful design of your implementation 
     a. What resources do you have and what is their sturcture?
     GET /products 
-    resources : An array of products with id,name,price,dimensions,stock attribute
+    resources : An array of products 
 
     GET /products?name=Tasty
     resources: array of products that contain the name 
@@ -31,15 +31,15 @@ Lab Reflection Questions
     resources : product with id,name,price,dimensions,stock attribute 
     
     GET /products/:productID
-    resources: product that matches the given id 
+    resources: product with id,name,price,dimensions,stock attribute that matches the given id 
 
     GET /products/:productID/reviews
-    resources: reviews of the specific product 
+    resources: an array of reviews in a product with id=productID
 
     POST /products/:productID/reviews
     resources: review that we added 
 
-    GET /products/:productID/reviewsID 
+    GET /products/:productID/reviews/:reviewsID 
     resources: specific review given the product ID and review ID 
 
     b. Which HTTP methods are you using for various operations and why?
@@ -96,6 +96,8 @@ Lab Reflection Questions
     For the products functionalities, the URI is /products or /products/:productID for a specific page
     Since reviews are tied to a specific product, the URI is /products/:productID/reviews
     For a specific review for a specific product, then the URI is /products/:productID/reviews/:reviewID
+    For creating a new product, the URL is /new-product 
+    For searching products , the URL is /search
     
     d. What response codes are you sending and why?
     200 if successfully
