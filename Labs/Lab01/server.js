@@ -81,7 +81,7 @@ app.get('/products', (req, res) => {
 // search (GET Method)
 app.get('/search', (req, res) => {
     let result = [];
-    res.render("pages/search", { product: product, result: result });
+    res.render("pages/search", {product: product, result: result});
 })
 
 //search (POST)
@@ -129,11 +129,11 @@ app.post('/search', (req, res) => {
 })
 
 // create a new product 
-app.get("/add",(req,res)=>{
-    res.render("pages/add",);
+app.get("/new-product",(req,res)=>{
+    res.render("pages/add");
 })
 
-app.post("/add",[verify,add]);
+app.post("/new-product",[verify,add]);
 
 function verify(req,res,next){
     //check the JSON string

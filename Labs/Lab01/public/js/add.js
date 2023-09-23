@@ -22,7 +22,7 @@ function addProduct() {
     }
 
     let newProduct = { "name": name, "price": price, "dimensions": { "x": x, "y": y, "z": z }, "stock": stock };
-    fetch(`http://localhost:3000/add`, {
+    fetch(`http://localhost:3000/new-product`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
