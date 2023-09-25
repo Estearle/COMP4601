@@ -1,0 +1,19 @@
+html(lang="eng")
+    head 
+        title Review
+        style
+            include ../styles.css
+    
+    body 
+    a(class="head" href="/products") Products
+    h2 #{product.name} Review ##{review.id + 1}
+    div.info
+        br
+        |   Rating: #{review.rating}/10
+        br
+        |   Comment: #{review.comment}
+        br
+
+
+    
+
