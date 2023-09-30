@@ -1,0 +1,15 @@
+html(lang="eng")
+    head 
+        title Orders
+        style
+            include ../styles.css
+    
+    body 
+    
+    a(class="head" href="/products") Products
+    include ../partials/headers
+    h1 All Orders
+    div.info
+        each order in orders
+            a(href="/orders/"+order.id) #{order.name} (ID: #{order.id})
+            br

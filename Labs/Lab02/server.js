@@ -2,6 +2,7 @@ import express from 'express';
 const app = express();
 import {MongoClient, ObjectId} from 'mongodb';
 import Product from "./Product.js"
+import Order from "./Orders.js"
 
 // import Review from "./Review.js"
 import pkg from 'mongoose';
@@ -235,6 +236,94 @@ app.get("/products/:productID/reviews/:reviewID",async function(req,res,next){
     }
 });
 
+// post order
+app.post("/orders",[verifyOrder,addOrder]);
+
+// check if the order is complete and has all the necessary info
+async function verifyOrder(req,res,next){
+    
+    console.log(req.body);
+
+    if (!req.body.name && req.body.products == 0) {
+        res.status(409).send("Name and Products not entered.");
+        return;
+    } else if (!req.body.name) {
+        res.status(409).send("Name not entered.");
+        return;
+    } else if (req.body.products == 0) {
+        res.status(409).send("Products not entered.");
+        return;
+    } else { 
+        let newOrder = {
+            id: 0,
+            name: req.body.name,
+            products : req.body.products
+        };
+        
+        for (let prod of newOrder.products) {
+            let item = await Product.findOne({"id": prod.id});
+            if (!item) {
+                res.status(409).send("Product: " + prod.name +  " not found in database.");
+                return;
+            } else if (item.stock < prod.quantity) {
+                res.status(409).send("There is not enough of product, " + prod.name +  ", in stock.");
+                return; 
+            }
+        }
+    }
+    next();
+}
+
+// 
+async function addOrder(req,res,next){
+    let newOrder = {
+        id: 0,
+        name: req.body.name,
+        products : req.body.products
+    };
+
+    newOrder.id = await Order.count();
+
+    newOrder.products.forEach(async (prod) => {
+        let item = await Product.findOne({"id": prod.id});
+        let newStock = parseInt(item.stock) - parseInt(prod.quantity);
+        await Product.findOneAndUpdate({"id": prod.id},{$set:{"stock":newStock}});
+    });
+    
+    await Order.create(new Order(newOrder));
+    res.status(201).json(newOrder);
+}
+
+
+// view orders
+app.get("/orders",async(req,res)=>{
+    let allOrders = await Order.find({}).sort("id");
+    
+    res.format({
+        "application/json":function(){
+			res.status(200).json(allOrders);
+		},
+		    "text/html": () => {res.render("pages/orders", {orders: allOrders});
+        }
+    })
+})
+
+// view specific order
+app.get("/orders/:orderID",async(req,res)=>{
+    let ordID = req.params.orderID;
+
+    let ord = await Order.findOne({"id":ordID});
+
+    if(!ord){
+        res.status(404).send("Unknown Order ID " + ordID);
+    }
+
+    if(req.accepts("text/html")) {
+        res.status(200).render("pages/order.pug", {order : ord})
+    } else if(req.accepts("application/json")) {
+        res.status(200).json(ord);
+    }
+})
 
 // Create an async function to load the data.
 // Other mongoose calls that return promise (connect) 

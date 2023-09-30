@@ -1,0 +1,15 @@
+html(lang="eng")
+    head 
+        title Order
+        style
+            include ../styles.css
+    
+    body 
+    a(class="head" href="/products") Products
+    h2 Order Number:  #{order.id}
+    h2 Customer Name: #{order.name}
+    div.info
+        each item in order.products
+            a(href="/products/" + item.id) #{item.name} 
+            span x#{item.quantity}
+            br
