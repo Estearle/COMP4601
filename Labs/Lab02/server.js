@@ -110,12 +110,7 @@ app.post('/search', async(req, res) => {
 
 // create a new product 
 app.get("/new-product",(req,res)=>{
-    res.format({
-        "application/json":function(){
-			res.status(200);
-		},
-		"text/html": () => {res.render("pages/add")}
-    })
+    res.render("pages/add");
     
 })
 
