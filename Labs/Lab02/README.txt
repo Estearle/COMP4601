@@ -2,7 +2,7 @@ Lab 02
 Rachel Wong 101184274
 Earle Estrella 100907269
 
-NOTE: 
+NOTE: Products.json has one change for demonstration purposes. The stock of the first product(Tasty Cotton Chair) went down to 0 to show name+instock search works.
 
 Lab Reflection Questions 
 
@@ -24,6 +24,10 @@ Collection Schema of a Product (document):
         },
         comment: String
     }]
+
+The product's name, price, dimensions, stock, and id (not _id) consist the minimum required information when adding a new product. and will be displayed on the associated product page .
+The reviews array are defaulted to be empty unless the products from products.json contain any reviews object. Each review has its unique id for counting the numbers of reviews we have under each product. 
+The rating is required for each review, while a comment is not mandatory. The rating can only range from 0 to 10.
 
 Collection : Order
 Collection Schema of a Order (document):
