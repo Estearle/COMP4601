@@ -26,7 +26,7 @@ Collection Schema of a Product (document):
     }]
 
 Collection : Order
-Collection Schema of a Order(document):
+Collection Schema of a Order (document):
     id: Number,
     name: String,
     products : [{
