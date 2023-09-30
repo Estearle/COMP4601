@@ -142,13 +142,12 @@ function verify(req,res,next){
 
 async function add(req,res,next){
     let productId = await Product.count();
-    productId++;
     let addProduct = {
         name: req.body.name,
         price: req.body.price,
         dimensions : req.body.dimensions,
         stock : req.body.stock,
-        id : productId  ,
+        id : productId ,
         reviews : []
     };
     let newProduct = await Product.create(new Product(addProduct));
