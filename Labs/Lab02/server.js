@@ -312,11 +312,12 @@ app.get("/orders/:orderID",async(req,res)=>{
         res.status(404).send("Unknown Order ID " + ordID);
     }
 
-    if(req.accepts("text/html")) {
-        res.status(200).render("pages/order.pug", {order : ord})
-    } else if(req.accepts("application/json")) {
-        res.status(200).json(ord);
-    }
+    res.format({
+        "application/json":function(){
+			res.status(200).json(ord);
+		},
+		"text/html": () => {res.status(200).render("pages/order.pug", {order : ord})}
+    })
 })
 
 // Create an async function to load the data.
