@@ -13,7 +13,7 @@ fs.readFile('products.json', 'utf8', function (err, data) {
     productsArr.forEach((prod) => {
         prod.reviews = [];
     })
-    // console.log(productsArr);
+    console.log(productsArr);
 })
 
 
