@@ -12,7 +12,6 @@ const path = require('path');
 const url = require('url');
 
 app.use(express.static(__dirname + ROOT_DIR_JS)) //provide static server
-app.use(express.static(__dirname + ROOT_DIR_CSS)) //provide static server
 
 //convert JSON stringified strings in a POST request to JSON
 app.use(express.json());
