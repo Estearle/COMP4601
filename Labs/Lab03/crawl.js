@@ -49,8 +49,8 @@ const c = new Crawler({
 
                 // Add new links to the queue if they haven't been visited yet
                 if (!visited.includes(href)) {
-                    visited.push(href);  // Mark the URL as visited
-                    c.queue(href);  // Queue the URL for crawling
+                    visited.push(href);  
+                    c.queue(href);  
                    
                 }
             });
@@ -62,7 +62,6 @@ const c = new Crawler({
 });
 
 c.on('drain',function () {
-    // console.log(page);
     console.log("Done.");
     //This gives you a 'client' object that you can use to interact with the database
     const loadData = async() =>{
