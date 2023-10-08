@@ -44,8 +44,12 @@ Disadvantage:
 Update the database after each page is visited:
 Advantages:
 -Data is updated continuously.
+-We do not have to crawl the whole thing again even if the crawling process gets interrupted.
+-Since you're saving data immediately, you don't need to store large amounts of data in memory.
 
 Disadvantages:
 -It might take longer time to finish the program
+-Constantly writing to the database after every page visit can introduce performance overheads.
+-If you're not careful, you might end up with partial data in the database if the crawling process gets interrupted.
 
 Demo video: https://www.youtube.com/watch?v=c8S1aG7xR4k
