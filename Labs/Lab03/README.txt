@@ -25,4 +25,4 @@ The array of incoming links represents incoming edges from other nodes that link
 database, or does it update the database after each page is visited? Describe any
 advantages/disadvantages of each approach?
 
-Demo video: https://www.youtube.com/watch?v=ayCshb1NALA
+Demo video: 
