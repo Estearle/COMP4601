@@ -3,7 +3,7 @@ const url = require("url");
 const {connect, connection} = require('mongoose');
 const Page = require("./Page.js");
 //store visited page 
-let visited = [];
+let visited = ['https://people.scs.carleton.ca/~davidmckenney/fruitgraph/N-0.html'];
 let page = [];
 
 const c = new Crawler({
@@ -24,7 +24,7 @@ const c = new Crawler({
 
             // create if it doesn't exist
                 if(!page[urlLink]){
-                    page[urlLink]={"outgoing":[],"incoming":[],content:[$("p").text()]};
+                    page[urlLink]={link: urlLink,"outgoing":[],"incoming":[],content:[$("p").text()]};
                 }
                 else{
                     // add content
@@ -41,7 +41,7 @@ const c = new Crawler({
                
                 //create if it doesn't exist
                 if(!page[href]){
-                    page[href]={"outgoing":[],"incoming":[],content:[]};
+                    page[href]={link: href,"outgoing":[],"incoming":[],content:[]};
                 }
 
                 page[href].incoming.push(urlLink);
