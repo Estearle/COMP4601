@@ -15,12 +15,37 @@ const url = require('url');
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + ROOT_DIR_JS)) //provide static server
 
-
-
 //convert JSON stringified strings in a POST request to JSON
 app.use(express.json());
 app.set('views', './views')
 app.set('view engine', 'pug')
+
+
+//Create your index
+//Specify fields you want to include in search
+//Specify reference you want back (i.e., page ID)
+const index = elasticlunr(function () {
+    this.addField('title');
+    this.addField('content');
+    this.setRef('title');
+});
+//homepage
+app.get('/',(req,res)=>{
+    res.render("pages/home",{});
+})
+
+app.get('/search',(req,res)=>{
+    res.render("pages/search",{});
+})
+
+app.post('/search',async(req,res)=>{
+    console.log("searching");
+    let text = req.body.text;
+    console.log(text);
+    let result = await index.search(text,{});
+    console.log(result);
+    res.json(result);
+})
 
 app.get('/popular', async (req, res) => {
   try {
@@ -65,21 +90,7 @@ app.get('/page/:number', async (req, res) => {
   }
 });
 
-//homepage
-app.get('/',(req,res)=>{
-    res.render("pages/home",{});
-})
 
-app.get('/search',(req,res)=>{
-    res.render("pages/search",{});
-})
-
-app.post('/search',(req,res)=>{
-    console.log("searching");
-    console.log(req.body);
-    let text = req.body.text;
-    console.log(text);
-})
 
 // Create an async function to load the data.
 // Other mongoose calls that return promise (connect) 
@@ -105,14 +116,6 @@ loadData()
 
   })
   .then(async ()=>{
-    //Create your index
-    //Specify fields you want to include in search
-    //Specify reference you want back (i.e., page ID)
-    const index = elasticlunr(function () {
-        this.addField('title');
-        this.addField('content');
-        this.setRef('title');
-    });
     //Add all documents to the index 
     let result = await Page.find({});
     result.forEach(function(page){
