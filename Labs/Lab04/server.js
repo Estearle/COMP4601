@@ -39,12 +39,29 @@ app.get('/search',(req,res)=>{
 })
 
 app.post('/search',async(req,res)=>{
-    console.log("searching");
-    let text = req.body.text;
-    console.log(text);
-    let result = await index.search(text,{});
-    console.log(result);
-    res.json(result);
+    try {
+        console.log("searching");
+        let text = req.body.text;
+        console.log(text);
+        let results = await index.search(text,{});
+        console.log(results);
+
+        let topResults = await Promise.all(results.slice(0, 10).map(async (result) => {
+            let page = await Page.findOne({ title: result.ref });
+            return {
+                pageData: page,
+                score: result.score
+            }
+        }));
+
+        console.log("Top results:", topResults);
+
+        // res.json(result);
+        res.status(200).render('pages/results', {results: topResults, query: text });
+    } catch (error) {
+        console.error("Error in /search:", error);
+        res.status(500).send("Internal Server Error");
+    }
 })
 
 app.get('/popular', async (req, res) => {

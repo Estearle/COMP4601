@@ -1,0 +1,14 @@
+html(lang="eng")
+    head
+        title Search Results 
+    
+    body
+    a(href="/home") Homepage
+    br
+    br
+    h2 Search Results for "#{query}"
+    ul
+        each result in results
+            li
+                a(href=result.pageData.link) #{result.pageData.title}
+                span &nbsp;Score: #{result.score}
