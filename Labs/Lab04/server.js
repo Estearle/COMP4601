@@ -55,9 +55,8 @@ app.post('/search',async(req,res)=>{
         }));
 
         console.log("Top results:", topResults);
-
-        // res.json(result);
-        res.status(200).render('pages/results', {results: topResults, query: text });
+        
+        res.json({results: topResults, query: text });
     } catch (error) {
         console.error("Error in /search:", error);
         res.status(500).send("Internal Server Error");
