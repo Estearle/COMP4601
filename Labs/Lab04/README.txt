@@ -16,3 +16,4 @@ The array is sorted by title and content fields in descending order. Documents w
 It might not be scalable because we have to index the whole collection again every time the server starts. We can index the document only if there are new documents.
 
 Demo video:
+https://www.youtube.com/watch?v=Oo7fRzYaF70
