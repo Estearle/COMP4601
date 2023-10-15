@@ -29,6 +29,7 @@ const index = elasticlunr(function () {
     this.addField('content');
     this.setRef('title');
 });
+
 //homepage
 app.get('/',(req,res)=>{
     res.render("pages/home",{});
@@ -136,7 +137,6 @@ loadData()
     let result = await Page.find({});
     result.forEach(function(page){
         index.addDoc(page.toObject());
-
     })
     // console.log("TESTING");
     // console.log(index.search("banana apple banana banana banana peach peach pear apple coconut pear peach pear peach pear banana peach peach banana apple banana pear pear peach peach pear",{}))
