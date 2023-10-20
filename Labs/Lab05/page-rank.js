@@ -6,6 +6,29 @@ const { connect, Types } = mongoose;
 
 let adjacent,x0;
 let alpha = 0.1;
+let CONVERGENCE_THRESHOLD = 0.0001;
+
+let computePageRank = (transitionMatrix, initialVector) => {
+    let currentVector = initialVector;
+  
+    while (true) {
+        let previousVector = currentVector;
+
+        currentVector = previousVector.mmul(transitionMatrix);
+        
+        // Normalize currentVector to prevent floating-point inaccuracies
+        const sum = currentVector.sum();
+        currentVector = currentVector.div(sum);
+
+        iterationCount++;
+
+        // Check convergence
+        if (Matrix.sub(currentVector, previousVector).norm() < CONVERGENCE_THRESHOLD) {
+            console.log("Converged after " + iterationCount + " iterations.");
+            return currentVector;
+        }
+    }
+};
 
 // Create an async function to load the data.
 // Other mongoose calls that return promise (connect) 
@@ -66,11 +89,30 @@ loadData()
         }
         
     }
+
     console.log(adjacent)
     resultingMatrix = adjacent.mul(1-alpha).add(m.mul(alpha));
     console.log(adjacent.mul(1-alpha));
     console.log(m.mul(alpha))
     console.log(resultingMatrix)
+    let pageRankVector = computePageRank(resultingMatrix, x0);
+    console.log('PageRank Values:', pageRankVector);
+
+    // Create an array of { title, rank } objects for display purposes
+    let rankedPages = [];
+    let pageRankArray = pageRankVector.to1DArray();
+    for (let i = 0; i < result.length; i++) {
+        rankedPages.push({
+            title: result[i].title,
+            rank: pageRankArray[i]
+        });
+    }
+    
+    rankedPages.sort((a, b) => b.rank - a.rank);
+    
+    let top25 = rankedPages.slice(0, 25);
+    console.log("Top 25 Pages by PageRank:");
+    console.table(top25);   
 })
   .catch(err => console.log(err));
 
