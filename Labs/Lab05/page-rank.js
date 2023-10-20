@@ -17,7 +17,7 @@ let computePageRank = (transitionMatrix, initialVector) => {
         currentVector = previousVector.mmul(transitionMatrix);
         
         // Normalize currentVector to prevent floating-point inaccuracies
-        const sum = currentVector.sum();
+        let sum = currentVector.sum();
         currentVector = currentVector.div(sum);
 
         iterationCount++;
