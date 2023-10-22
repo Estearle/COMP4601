@@ -10,6 +10,7 @@ let CONVERGENCE_THRESHOLD = 0.0001;
 
 let computePageRank = (transitionMatrix, initialVector) => {
     let currentVector = initialVector;
+    let iterationCount = 0;
   
     while (true) {
         let previousVector = currentVector;
@@ -48,20 +49,39 @@ loadData()
     let len = result.length;
     adjacent = Matrix.zeros(len,len);
     //Initial PageRank vector
-    x0 = Matrix.eye(1,len);
+    x0 = Matrix.eye(1,len).fill(1/len);
     // a/N matrix
     m = Matrix.ones(len,len).mul(1/len);
 
-    //adjacent matrix
+    // //adjacent matrix
+    // for (let document of result){
+    //     let curPage = document.title;
+    //     let outgoing = document.outgoing;
+    //     for(let o of outgoing){
+    //         let title = o.split('-').pop().split(".")[0];
+    //         let current = curPage.split('-')[1];
+    //         adjacent.set(current,title,1);
+    //     }
+    // }
+
+    // ***** //
+    // Define a mapping from titles to indices
+    let titleToIndex = {};
+    result.forEach((document, index) => {
+        titleToIndex[document.title.split('-')[1]] = index;
+    });
+
+    // Adjusted adjacency matrix filling
     for (let document of result){
-        let curPage = document.title;
+        let curPage = document.title.split('-')[1];
         let outgoing = document.outgoing;
         for(let o of outgoing){
             let title = o.split('-').pop().split(".")[0];
-            let current = curPage.split('-')[1];
-            adjacent.set(current,title,1);
+            adjacent.set(titleToIndex[curPage], titleToIndex[title], 1);
         }
     }
+    // ***** //
+
     //divide each 1 by the number of 1s in that row
     for(let i  = 0 ;i <len ; i++){
         let count = 0;
@@ -74,7 +94,7 @@ loadData()
 
         //If a row in the adjacency matrix has no 1s, replace each element by 1/N
         if(count === 0){
-            for(let j = 0 ; i < len ; j++){
+            for(let j = 0 ; j < len ; j++){
                 adjacent.set(i,j,1/len);
             }
             continue;
