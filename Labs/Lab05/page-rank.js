@@ -50,9 +50,8 @@ loadData()
     adjacent = Matrix.zeros(len,len);
     //Initial PageRank vector
     x0 = Matrix.eye(1,len).fill(1/len);
-    // a/N matrix
+    // 1/N matrix
     m = Matrix.ones(len,len).mul(1/len);
-
     // Define a mapping from titles to indices
     let titleToIndex = {};
     result.forEach((document, index) => {
