@@ -53,18 +53,6 @@ loadData()
     // a/N matrix
     m = Matrix.ones(len,len).mul(1/len);
 
-    // //adjacent matrix
-    // for (let document of result){
-    //     let curPage = document.title;
-    //     let outgoing = document.outgoing;
-    //     for(let o of outgoing){
-    //         let title = o.split('-').pop().split(".")[0];
-    //         let current = curPage.split('-')[1];
-    //         adjacent.set(current,title,1);
-    //     }
-    // }
-
-    // ***** //
     // Define a mapping from titles to indices
     let titleToIndex = {};
     result.forEach((document, index) => {
@@ -80,7 +68,6 @@ loadData()
             adjacent.set(titleToIndex[curPage], titleToIndex[title], 1);
         }
     }
-    // ***** //
 
     //divide each 1 by the number of 1s in that row
     for(let i  = 0 ;i <len ; i++){
