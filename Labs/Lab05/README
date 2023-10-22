@@ -5,7 +5,7 @@ Earle Estrella 100907269
 1. How did you generate the adjacency matrix from the crawled data? 
 We connect to the database /lab3.
 Adjacency matrix: 
-    1. Initialize the matrix of zeros with 1000 x 1000
+    1. Initialize a 1000x1000 matrix with zeros
     2. Mapping the titles to indices (titleToIndex)
     3. Filling the adjacency matrix: Iterate through each document outgoing links,update the adjacency matrix with 1 at (titleToIndex[currentPage], titleToIndex[outgoingLink])
     4. Calculate the number of 1s in each row and update the 1 into 1/count. If a row has no 1s, the row is filled with 1/len = 1/1000
