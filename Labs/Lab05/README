@@ -1,2 +1,16 @@
+Lab 05
+Rachel Wong 101184274
+Earle Estrella 100907269
+
 1. How did you generate the adjacency matrix from the crawled data? 
+
+
 2. What effect would lower/higher alpha values have on the results?
+The alpha value is used to represent the how random it is to go from one page into another without having 
+an outgoing link to it. 
+A higher alpha value converges faster. This means that as alpha approaches 1, then the outgoing links 
+matter less and all pages tend to have closer equal PageRank values.
+Conversely, a lower alpha value converges slow. This means that as alpha approaches 0, there is more weight
+to outgoing links between the pages and pages with more incoming links are ranked higher.
+
+Demo video:
