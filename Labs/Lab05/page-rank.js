@@ -52,7 +52,6 @@ loadData()
     x0 = Matrix.eye(1,len).fill(1/len);
     // 1/N matrix
     m = Matrix.ones(len,len).mul(1/len);
-    
     // Define a mapping from titles to indices
     let titleToIndex = {};
     result.forEach((document, index) => {
@@ -68,7 +67,6 @@ loadData()
             adjacent.set(titleToIndex[curPage], titleToIndex[title], 1);
         }
     }
-
 
     //divide each 1 by the number of 1s in that row
     for(let i  = 0 ;i <len ; i++){
