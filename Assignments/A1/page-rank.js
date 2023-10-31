@@ -1,6 +1,7 @@
 const {Matrix} = require("ml-matrix");
 const { MongoClient, ObjectId } = require('mongodb');
 const Page = require("./Page.js");
+const Game = require("./Game.js");
 const mongoose = require('mongoose');
 const { connect, Types } = mongoose;
 

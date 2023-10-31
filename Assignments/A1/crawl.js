@@ -2,7 +2,6 @@ const Crawler = require("crawler");
 const url = require("url");
 const { connect, connection } = require('mongoose');
 const Page = require("./Page.js");
-const Game = require("./Game.js")
 const { Matrix } = require("ml-matrix");
 const { MongoClient, ObjectId } = require('mongodb');
 
@@ -15,6 +14,29 @@ let adjacent, x0;
 let alpha = 0.1;
 let CONVERGENCE_THRESHOLD = 0.0001;
 
+//Page Rank Calculation
+let computePageRank = (transitionMatrix, initialVector) => {
+    let currentVector = initialVector;
+    let iterationCount = 0;
+
+    while (true) {
+        let previousVector = currentVector;
+
+        currentVector = previousVector.mmul(transitionMatrix);
+
+        // Normalize currentVector to prevent floating-point inaccuracies
+        let sum = currentVector.sum();
+        currentVector = currentVector.div(sum);
+
+        iterationCount++;
+
+        // Check convergence
+        if (Matrix.sub(currentVector, previousVector).norm() < CONVERGENCE_THRESHOLD) {
+            console.log("Converged after " + iterationCount + " iterations.");
+            return currentVector;
+        }
+    }
+};
 
 const c = new Crawler({
     maxConnections: 7,
@@ -80,7 +102,10 @@ c.on('drain', function () {
         await connect('mongodb://localhost:27017/A1');
 
         //Remove database and start anew.
-        await connection.dropDatabase();
+        if (await Page.collection.exists()) {
+            await Page.collection.drop();
+        }
+        await Page.collection.drop();
         let obj = Object.values(page).map(p => new Page(p));
 
         await Page.create(obj);
@@ -185,28 +210,6 @@ c.on('drain', function () {
 c.queue('https://people.scs.carleton.ca/~davidmckenney/fruitgraph/N-0.html');
 
 
-//Page Rank Calculation
-let computePageRank = (transitionMatrix, initialVector) => {
-    let currentVector = initialVector;
-    let iterationCount = 0;
 
-    while (true) {
-        let previousVector = currentVector;
-
-        currentVector = previousVector.mmul(transitionMatrix);
-
-        // Normalize currentVector to prevent floating-point inaccuracies
-        let sum = currentVector.sum();
-        currentVector = currentVector.div(sum);
-
-        iterationCount++;
-
-        // Check convergence
-        if (Matrix.sub(currentVector, previousVector).norm() < CONVERGENCE_THRESHOLD) {
-            console.log("Converged after " + iterationCount + " iterations.");
-            return currentVector;
-        }
-    }
-};
 
 
