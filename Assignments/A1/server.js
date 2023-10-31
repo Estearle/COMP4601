@@ -16,7 +16,7 @@ const url = require('url');
 app.use(express.static(__dirname + ROOT_DIR_JS)) //provide static server
 app.use(express.static(__dirname + ROOT_DIR_CSS)) //provide static server
 
-let fruitResult;
+let fruitResult, gameResult;
 //convert JSON stringified strings in a POST request to JSON
 app.use(express.json());
 app.set('views', './views')
@@ -30,26 +30,31 @@ const fruitIndex = elasticlunr(function () {
     this.setRef('title');
 });
 
+const personalIndex = elasticlunr(function () {
+    this.addField('title');
+    this.addField('categories');
+    this.setRef('title');
+})
 
 app.get("/fruits", async (req, res) => {
     let q = req.query.q;
     // boost default is false
     let boost = req.query.boost || "false";
-    let limit = req.query.limit ;
+    let limit = req.query.limit;
     let searchResult;
 
     console.log(q, boost, limit)
 
     // Limit can only be [1,50], default = 10 
-    if(typeof limit === "undefined"){
+    if (typeof limit === "undefined") {
         limit = 10;
         console.log(limit)
     }
-    else{
-        if(Number(limit)){
+    else {
+        if (Number(limit)) {
             limit = Number(limit);
-            if(limit >= 1 && limit <= 50){}
-            else{ res.status(404).json({error:"limit out of bound"})}
+            if (limit >= 1 && limit <= 50) { }
+            else { res.status(404).json({ error: "limit out of bound" }) }
         }
     }
     // search for string (q)
@@ -72,9 +77,9 @@ app.get("/fruits", async (req, res) => {
             }))
             searchResult.sort(function (a, b) { return b.score - a.score });
         }
-        
+
         //If a valid limit parameter X is specified, your server MUST return X results, even if all documents have a score of 0 (return any X documents in this case).
-        if(searchResult.length < limit){
+        if (searchResult.length < limit) {
             searchResult = fruitResult;
         }
     }
@@ -90,10 +95,70 @@ app.get("/fruits", async (req, res) => {
 
     // return limit(if typed) or 10(default)
     searchResult = searchResult.slice(0, limit);
+    res.json(searchResult);
 })
 
-app.get("/personal", (req, res) => {
+app.get("/personal", async (req, res) => {
+    let q = req.query.q;
+    // boost default is false
+    let boost = req.query.boost || "false";
+    let limit = req.query.limit;
+    let searchResult;
 
+    console.log(q, boost, limit)
+
+    // Limit can only be [1,50], default = 10 
+    if (typeof limit === "undefined") {
+        limit = 10;
+    }
+    else {
+        if (Number(limit)) {
+            limit = Number(limit);
+            if (limit >= 1 && limit <= 50) { }
+            else { res.status(404).json({ error: "limit out of bound" }) }
+        }
+    }
+    // search for string (q)
+    if (typeof q !== "undefined") {
+        // (1) q (string) + boost (false)
+        if (boost === "false") {
+            console.log("(1)q (string) + boost (false)");
+            searchResult = personalIndex.search(q, {});
+        }
+        // (2) q (string) + boost(true)
+        else if (boost === "true") {
+            console.log("(2) q (string) + boost(true)");
+            let elasticResult = personalIndex.search(q, {});
+            searchResult = await Promise.all(elasticResult.map(async (obj) => {
+                // console.log(obj.ref);
+                let ref = await Game.findOne({ "title": obj.ref });
+                let updatedScore = ref.pageRank * obj.score;
+                return {
+                    result: ref.toObject(),
+                    score: updatedScore
+                }
+            }))
+            searchResult.sort(function (a, b) { return b.score - a.score });
+        }
+        //If a valid limit parameter X is specified, your server MUST return X results, even if all documents have a score of 0 (return any X documents in this case).
+        if (searchResult.length < limit) {
+            searchResult = gameResult;
+        }
+    }
+    else {
+        // (3)boost (true)
+        // Same thing as populating Top PageRank (Lab 5)
+        if (boost === "true") {
+            console.log("(3)boost (true)");
+            fruitResult = await Game.find({}, 'title').sort({ 'pageRank': -1 });
+            searchResult = gameResult.map(obj => obj.toObject());
+        }
+
+    }
+
+    // return limit(if typed) or 10(default)
+    searchResult = searchResult.slice(0, limit);
+    res.json(searchResult);
 })
 
 
@@ -115,17 +180,21 @@ const loadData = async () => {
 // Any errors from connect, dropDatabase or create will be caught 
 // in the catch statement.
 loadData()
-    .then(() => {
-
-        app.listen(PORT);
-        console.log("Listen on port:", PORT);
-
-    })
     .then(async () => {
         //Add all documents to the index 
         fruitResult = await Page.find({});
         fruitResult.forEach(function (page) {
             fruitIndex.addDoc(page.toObject());
         })
+
+        gameResult = await Game.find({});
+        gameResult.forEach(function (game) {
+            personalIndex.addDoc(game.toObject());
+        })
+    })
+    .then(() => {
+        app.listen(PORT);
+        console.log("Listen on port:", PORT);
+
     })
     .catch(err => console.log(err));
