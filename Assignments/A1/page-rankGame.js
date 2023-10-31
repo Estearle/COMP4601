@@ -1,9 +1,8 @@
 const { Matrix } = require("ml-matrix");
 const { MongoClient, ObjectId } = require('mongodb');
 const Game = require("./Game.js");
-const Game = require("./Game.js");
 const mongoose = require('mongoose');
-const { connect, Types } = mongoose;
+const { connect, Types} = mongoose;
 
 let adjacent, x0;
 let alpha = 0.1;
@@ -57,19 +56,19 @@ loadData()
         // Define a mapping from titles to indices
         let titleToIndex = {};
         result.forEach((document, index) => {
-            titleToIndex[document.title] = index;
+            titleToIndex[document.link] = index;
         });
-
+        console.log(titleToIndex)
         // Adjusted adjacency matrix filling
         for (let document of result) {
-            let curGame = document.title;
+            let curGame = document.link;
             let fanAlsoLike = document.fanAlsoLike;
             for (let outgoing of fanAlsoLike) {
-                let title = outgoing;
-                adjacent.set(titleToIndex[curGame], titleToIndex[title], 1);
+                // console.log(titleToIndex[curGame],titleToIndex[outgoing])
+                adjacent.set(titleToIndex[curGame], titleToIndex[outgoing], 1);
+                
             }
         }
-
 
         //divide each 1 by the number of 1s in that row
         for (let i = 0; i < len; i++) {
@@ -80,7 +79,6 @@ loadData()
                     count++;
                 }
             }
-
             //If a row in the adjacency matrix has no 1s, replace each element by 1/N
             if (count === 0) {
                 for (let j = 0; j < len; j++) {
@@ -99,7 +97,7 @@ loadData()
 
         }
 
-        // console.log(adjacent)
+        // console.log(adjacent);
         resultingMatrix = adjacent.mul(1 - alpha).add(m.mul(alpha));
         // console.log(adjacent.mul(1-alpha));
         // console.log(m.mul(alpha))
@@ -111,8 +109,8 @@ loadData()
         let rankedGames = [];
         let GameRankArray = GameRankVector.to1DArray();
         for (let i = 0; i < result.length; i++) {
-            const searchResult = await Game.updateOne({ "title": result[i].title }, { $set: { "pagaeRank": GameRankArray[i] } });
-            console.log(result[i].title, ":", GameRankArray[i])
+            const searchResult = await Game.updateOne({ "link": result[i].link }, { $set: { "pageRank": GameRankArray[i] } });
+            // console.log(result[i].title, ":", GameRankArray[i])
             rankedGames.push({
                 title: result[i].title,
                 rank: GameRankArray[i]
@@ -122,11 +120,11 @@ loadData()
         rankedGames.sort((a, b) => b.rank - a.rank);
 
         let top25 = rankedGames.slice(0, 25);
-        console.log("Top 25 Games by GameRank:");
+        console.log("Top 25 Games by PameRank:");
         console.table(top25);
     })
     .then((result) => {
         console.log("Closing database connection.");
-        connection.close();
+        mongoose.disconnect();
     })
     .catch(err => console.log(err));

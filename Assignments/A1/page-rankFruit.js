@@ -111,7 +111,7 @@ loadData()
     let rankedPages = [];
     let pageRankArray = pageRankVector.to1DArray();
     for (let i = 0; i < result.length; i++) {
-        const searchResult = await Page.updateOne({"title":result[i].title},{$set:{"pagaeRank":pageRankArray[i]}});
+        const searchResult = await Page.updateOne({"title":result[i].title},{$set:{"pageRank":pageRankArray[i]}});
         console.log(result[i].title,":",pageRankArray[i])
         rankedPages.push({
             title: result[i].title,
@@ -124,6 +124,10 @@ loadData()
     let top25 = rankedPages.slice(0, 25);
     console.log("Top 25 Pages by PageRank:");
     console.table(top25);   
+})
+.then((result) => {
+    console.log("Closing database connection.");
+    mongoose.disconnect();
 })
   .catch(err => console.log(err));
 

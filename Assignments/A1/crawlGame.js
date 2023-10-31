@@ -8,8 +8,7 @@ const { MongoClient } = require("mongodb");
 
 //store visited page 
 let visited = ['https://boardgamegeek.com/boardgame/224517/brass-birmingham'];
-let game = [];
-let count = 1; 
+let game = []; 
 
 //Retreive all other info
 async function info(href,obj) {
@@ -107,11 +106,6 @@ const c = new Crawler({
     retries:3,
 
     callback: async function (error, res, done) {
-        if(count >= 25){
-            console.log(visited)
-            done();
-            return;
-        }
         if (error) {
             console.log(error);
         } else {
@@ -129,18 +123,17 @@ const c = new Crawler({
             await info(urlLink,current);
             await retreiveInfo(urlLink,current);
             game.push(current);
-            count++;
             console.log(game.length);
             // console.log(game[urlLink])
             game.forEach(g=>{
                 g.fanAlsoLike.forEach(link=>{
-                    if(!visited.includes(link) && count < 25 ){
+                    if(!visited.includes(link) && visited.length < 500 ){
                         visited.push(link);
                         c.queue(link);
                     }
                 })
             });
-
+            done();
         }
     }
 });
@@ -160,7 +153,7 @@ c.on('drain', function () {
 
         // If the collection exists, drop it.
         if (collectionExists) {
-            await Page.collection.drop();
+            await Game.collection.drop();
         }
         let obj = Object.values(game).map(p => new Game(p));
 
