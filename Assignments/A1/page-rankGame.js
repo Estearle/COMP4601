@@ -47,18 +47,33 @@ loadData()
         let resultingMatrix;
         let result = await Game.find({});
         let len = result.length;
-        adjacent = Matrix.zeros(len, len);
+        let all = new Set();
+        let col = new Set();
+        for(let document of result){
+            let fanAlsoLike = document.fanAlsoLike;
+            for(let outgoing of fanAlsoLike){
+                col.add(outgoing);
+                all.add(outgoing);
+            }
+            all.add(document.link);
+        }
+        let colSize = col.size;
+        
+        // console.log(all);
+        adjacent = Matrix.zeros(all.size, all.size);
         //Initial GameRank vector
-        x0 = Matrix.eye(1, len).fill(1 / len);
+        x0 = Matrix.eye(1, all.size).fill(1 / all.size);
         // 1/N matrix
-        m = Matrix.ones(len, len).mul(1 / len);
+        m = Matrix.ones(all.size, all.size).mul(1 / all.size);
 
         // Define a mapping from titles to indices
         let titleToIndex = {};
-        result.forEach((document, index) => {
-            titleToIndex[document.link] = index;
-        });
-        console.log(titleToIndex)
+        let index = 0 ;
+        all.forEach((document => {
+            titleToIndex[document] = index++;
+        }));
+        
+        // console.log(titleToIndex)
         // Adjusted adjacency matrix filling
         for (let document of result) {
             let curGame = document.link;
@@ -120,7 +135,7 @@ loadData()
         rankedGames.sort((a, b) => b.rank - a.rank);
 
         let top25 = rankedGames.slice(0, 25);
-        console.log("Top 25 Games by PameRank:");
+        console.log("Top 25 Games by PageRank:");
         console.table(top25);
     })
     .then((result) => {
