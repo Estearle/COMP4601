@@ -33,6 +33,7 @@ const fruitIndex = elasticlunr(function () {
 const personalIndex = elasticlunr(function () {
     this.addField('title');
     this.addField('categories');
+    this.addField('description');
     this.setRef('title');
 })
 

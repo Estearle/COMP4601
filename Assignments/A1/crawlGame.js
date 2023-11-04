@@ -8,13 +8,13 @@ const { MongoClient } = require("mongodb");
 
 //store visited page 
 let visited = ['https://boardgamegeek.com/boardgame/224517/brass-birmingham'];
-let game = []; 
+let game = [];
 
 //Retreive all other info
-async function info(href,obj) {
+async function info(href, obj) {
     await new Promise(resolve => setTimeout(resolve, 5000));
     // Launch the browser and open a new blank page
-    const browser = await puppeteer.launch({headless: 'true'});
+    const browser = await puppeteer.launch({ headless: 'true' });
     const page = await browser.newPage();
     await page.goto(href);
 
@@ -63,26 +63,43 @@ async function info(href,obj) {
         }
         return categories;
     });
+    //description 
+    let descriptionSelector = "div.ng-binding[ng-bind-html] p,div.ng-binding[ng-bind-html] em";
+    let description = await page.$$eval(descriptionSelector, (result) => {
+        let p = [];
+        for (let r of result) {
+            let text = r.textContent.trim();
+            p.push(text);
+        }
+        return p;
+    });
+
     // console.log(numOfPlayer);
     // console.log(playingTime)
     // console.log(recommendatedAge)
     // console.log(complexity)
     // console.log(category[0])
+    // console.log(description);
+
     obj.numOfPlayers = numOfPlayer;
     obj.playingTime = playingTime;
     obj.recommendedAge = recommendatedAge;
     obj.complexity = complexity;
     obj.categories = category[0];
+    obj.description = description;
+
     // Close the browser
     await browser.close();
-    
+
+    return obj;
+
 }
 
 //Retreive "Fans Also Like"
-async function retreiveInfo(href,obj) {
+async function retreiveInfo(href, obj) {
     await new Promise(resolve => setTimeout(resolve, 5000));
     // Launch the browser and open a new blank page
-    const browser = await puppeteer.launch({headless: 'true'});
+    const browser = await puppeteer.launch({ headless: 'true' });
     const page = await browser.newPage();
 
     await page.goto(`${href}/recommendations`);
@@ -97,13 +114,14 @@ async function retreiveInfo(href,obj) {
     obj.fanAlsoLike = fanAlsoLike;
     // Close the browser
     await browser.close();
+    return obj.fanAlsoLike;
 };
 
 
 const c = new Crawler({
-    maxConnections: 5, 
-    retryTimeout:5000,
-    retries:3,
+    maxConnections: 5,
+    retryTimeout: 5000,
+    retries: 3,
 
     callback: async function (error, res, done) {
         if (error) {
@@ -114,20 +132,69 @@ const c = new Crawler({
             console.log(title);
             let urlLink = res.request.uri.href;
             console.log(urlLink);
-            let check = game.find(c => c.link === urlLink);
-            let current ;
-            if(!check){
-                current = {"title":title,"link":urlLink,"numOfPlayers":[],"playingTime":[],"recommendedAge":"","complexity":'',"categories":[],"fanAlsoLike":[],"pageRank":0};
+
+            //check if we have created the obj or not 
+            let check = await game.find(c => c.link === urlLink);
+            let current;
+            if (!check) {
+                current = { "title": title, "link": urlLink, "numOfPlayers": [], "playingTime": [], "recommendedAge": "", "complexity": '', "categories": [], "fanAlsoLike": [], "incoming": [], "description": [], "pageRank": 0 };
+                await info(urlLink, current);
+                await retreiveInfo(urlLink, current);
+                game.push(current);
+
+                //incoming link 
+                for (let link of current.fanAlsoLike) {
+                    let checkIfCreated = await game.find(c => c.link === link);
+                    if (!checkIfCreated) {
+                        let obj = { "title": "", "link": link, "numOfPlayers": [], "playingTime": [], "recommendedAge": "", "complexity": '', "categories": [], "fanAlsoLike": [], "incoming": [], "description": [], "pageRank": 0 };
+                        obj.incoming.push(urlLink);
+                        game.push(obj);
+                    }
+                    //if the obj in fanAlsoLike is already created
+                    else {
+                        for (let i = 0; i < game.length; i++) {
+                            if (game[i].link === link) {
+                                game[i].incoming.push(urlLink);
+                            }
+                        }
+                    }
+                }
             }
-            
-            await info(urlLink,current);
-            await retreiveInfo(urlLink,current);
-            game.push(current);
+            else {
+                //update
+                for (let i = 0; i < game.length; i++) {
+                    if (game[i].link === urlLink) {
+                        game[i].title = title;
+                        //incoming link 
+                        for (let link of game[i].fanAlsoLike) {
+                            let checkIfCreated = await game.find(c => c.link === link);
+                            if (!checkIfCreated) {
+                                let obj = { "title": "", "link": link, "numOfPlayers": [], "playingTime": [], "recommendedAge": "", "complexity": '', "categories": [], "fanAlsoLike": [], "incoming": [], "description": [], "pageRank": 0 };
+                                obj.incoming.push(urlLink);
+                                game.push(obj);
+                            }
+                            //if the obj in fanAlsoLike is already created
+                            else {
+                                for (let i = 0; i < game.length; i++) {
+                                    if (game[i].link === link) {
+                                        game[i].incoming.push(urlLink);
+                                    }
+                                }
+                            }
+                        }
+                        await info(urlLink, game[i]);
+                        await retreiveInfo(urlLink, game[i]);
+
+                    }
+                }
+            }
+
+
             console.log(game.length);
-            // console.log(game[urlLink])
-            game.forEach(g=>{
-                g.fanAlsoLike.forEach(link=>{
-                    if(!visited.includes(link) && visited.length < 500 ){
+            //crawling
+            game.forEach(g => {
+                g.fanAlsoLike.forEach(async link => {
+                    if (!visited.includes(link) && visited.length < 500) {
                         visited.push(link);
                         c.queue(link);
                     }
@@ -149,7 +216,7 @@ c.on('drain', function () {
 
         //Remove database and start anew.
         let collectionNames = await connection.db.listCollections().toArray();
-        let collectionExists = collectionNames.some(col => col.name === 'games'); 
+        let collectionExists = collectionNames.some(col => col.name === 'games');
 
         // If the collection exists, drop it.
         if (collectionExists) {
@@ -166,10 +233,10 @@ c.on('drain', function () {
     //connection.  Any errors from connect, dropDatabase or create
     //will be caught in the catch statement.
     loadData()
-    .then((result) => {
-        console.log("Closing database connection.");
-        connection.close();
-    })
+        .then((result) => {
+            console.log("Closing database connection.");
+            connection.close();
+        })
         .catch(err => console.log(err));
 
 })

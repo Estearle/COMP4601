@@ -9,6 +9,8 @@ const pageSchema = new mongoose.Schema({
     complexity:[Number,Number],
     categories:[String],
     fanAlsoLike:[String],
+    incoming:[String],
+    description:[String],
     pageRank: Number
 })
 
