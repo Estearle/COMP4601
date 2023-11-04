@@ -79,10 +79,6 @@ app.get("/fruits", async (req, res) => {
             searchResult.sort(function (a, b) { return b.score - a.score });
         }
 
-        //If a valid limit parameter X is specified, your server MUST return X results, even if all documents have a score of 0 (return any X documents in this case).
-        if (searchResult.length < limit) {
-            searchResult = fruitResult;
-        }
     }
     else {
         // (3)boost (true)
@@ -95,7 +91,23 @@ app.get("/fruits", async (req, res) => {
     }
 
     // return limit(if typed) or 10(default)
-    searchResult = searchResult.slice(0, limit);
+    if (searchResult.length > limit) {
+        searchResult = searchResult.slice(0, limit);
+    }
+    else {
+        //If a valid limit parameter X is specified, your server MUST return X results, even if all documents have a score of 0 (return any X documents in this case).
+        if (searchResult.length < limit) {
+            let count = limit - searchResult.length;
+            let ref = searchResult.map(result =>result.ref);
+            for( let i = 0 ;i < count ; i++){
+                let cur = gameResult[i].title;
+                if(!ref.includes(cur)){
+                    searchResult.push(cur);
+                }
+            }
+        }
+    }
+
     res.json(searchResult);
 })
 
@@ -141,10 +153,6 @@ app.get("/personal", async (req, res) => {
             }))
             searchResult.sort(function (a, b) { return b.score - a.score });
         }
-        //If a valid limit parameter X is specified, your server MUST return X results, even if all documents have a score of 0 (return any X documents in this case).
-        if (searchResult.length < limit) {
-            searchResult = gameResult;
-        }
     }
     else {
         // (3)boost (true)
@@ -154,11 +162,27 @@ app.get("/personal", async (req, res) => {
             fruitResult = await Game.find({}, 'title').sort({ 'pageRank': -1 });
             searchResult = gameResult.map(obj => obj.toObject());
         }
-
     }
 
     // return limit(if typed) or 10(default)
-    searchResult = searchResult.slice(0, limit);
+    if (searchResult.length > limit) {
+        searchResult = searchResult.slice(0, limit);
+    }
+    else {
+        //If a valid limit parameter X is specified, your server MUST return X results, even if all documents have a score of 0 (return any X documents in this case).
+        if (searchResult.length < limit) {
+            let count = limit - searchResult.length;
+            let ref = searchResult.map(result =>result.ref);
+            for( let i = 0 ;i < count ; i++){
+                let cur = gameResult[i].title;
+                if(!ref.includes(cur)){
+                    searchResult.push(cur);
+                }
+            }
+        }
+    }
+
+
     res.json(searchResult);
 })
 
