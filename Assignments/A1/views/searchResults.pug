@@ -1,0 +1,17 @@
+html(lang="en")
+    head
+        title Search Page
+        style
+            include styles.css
+    body
+        include partials/headers
+        header
+
+            h1 Search Results
+            each result in searchResults
+                .search-result
+                    h2 #{result.title}
+                    a(href=result.url) #{result.url}
+                    p Score: #{result.score}
+                    p PageRank: #{result.pr}
+                    a(href="/detail/" + encodeURIComponent(result.title)) View details

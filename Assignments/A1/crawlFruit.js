@@ -27,7 +27,7 @@ const c = new Crawler({
 
             // create if it doesn't exist
             if (!page[urlLink]) {
-                page[urlLink] = { "title": title, link: urlLink, "outgoing": [], "incoming": [], content: [$("p").text()],"pagerank":0 };
+                page[urlLink] = { "title": title, link: urlLink, "outgoing": [], "incoming": [], content: [$("p").text()],"pageRank":0 };
             }
             else {
                 // add content

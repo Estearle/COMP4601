@@ -1,0 +1,33 @@
+html(lang="en")
+    head
+        title Result Details
+        style
+            include styles.css
+    body 
+    include partials/headers
+    h1.title #{details.title} Details
+
+    p
+        strong URL:
+        a(href=details.url)  #{details.url}
+
+    p
+        strong Incoming Links:
+        ul
+        each link in details.incomingLinks
+            li
+            a(href=link) #{link}
+
+    p
+        strong Outgoing Links:
+        ul
+        each link in details.outgoingLinks
+            li
+            a(href=link) #{link}
+
+    p
+        strong Word Frequency Information:
+        ul
+        each word in details.wordFrequencies
+            li
+            | #{word.word} occurred #{word.frequency} times

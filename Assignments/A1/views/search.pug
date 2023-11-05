@@ -1,0 +1,29 @@
+html(lang="en")
+    head
+        title Search Page
+        style
+            include styles.css
+    body
+        include partials/headers
+        header
+        h1 Search for Fruits or Board Games
+        main
+
+        select(id="database", name="database")
+            option(value="fruits") Fruits Database
+            option(value="personal") Personal Database
+        br
+        br
+        input(id="query", type="text", name="q", placeholder="Enter your search query", required)
+        br
+        br
+        label(for="boost") Boost using PageRank:
+        input(id="boost", type="checkbox", name="boost")
+        br
+        br
+        label(for="limit") Number of results (1-50, default 10):
+        input(id="limit", type="number", name="limit", min="1", max="50", value="10")
+        br
+        button(id="submit", type="submit") Search
+
+        script(src="../search.js")
