@@ -8,6 +8,7 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const { connect, Types } = mongoose;
 //process.env.PORT will see if there is a specific port set in the environment
+const IP = "134.117.129.205";
 const PORT = process.env.PORT || 3000
 const ROOT_DIR_JS = '/public/js'; //root directory for javascript files
 const ROOT_DIR_CSS = '/public/css'; //root directory for css files
@@ -344,10 +345,10 @@ loadData()
         })
     })
     .then(() => {
-        app.listen(PORT, () => {
-            console.log("Listen on port:", PORT);
+        app.listen(PORT, '192.168.66.229', () => {
+            console.log(`Listening on http://${IP}:${PORT}`);
 
-            const serverUrl = `http://localhost:${PORT}`;
+            const serverUrl = `http://${IP}:${PORT}`;
 
             // Register with the distributed search engine
             axios.put('http://134.117.130.17:3000/searchengines', {
