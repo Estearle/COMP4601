@@ -4,6 +4,7 @@ const Page = require("./Page.js");
 const Game = require("./Game.js");
 const elasticlunr = require("elasticlunr");
 const natural = require('natural');
+const axios = require('axios');
 const mongoose = require('mongoose');
 const { connect, Types } = mongoose;
 //process.env.PORT will see if there is a specific port set in the environment
@@ -327,8 +328,40 @@ loadData()
         })
     })
     .then(() => {
-        app.listen(PORT);
-        console.log("Listen on port:", PORT);
+        app.listen(PORT, () => {
+            console.log("Listen on port:", PORT);
 
+            // Your server's base URL
+            const serverUrl = `http://localhost:${PORT}`;
+
+            // Register with the distributed search engine
+            axios.put('http://134.117.130.17:3000/searchengines', {
+                request_url: serverUrl
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.status === 201) {
+                    console.log('Search server registered successfully');
+                } else {
+                    console.log('Search server was already registered');
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.error('Error registering search server:', error.response.data);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.error('Error registering search server:', error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.error('Error', error.message);
+                }
+            });
+        });
     })
     .catch(err => console.log(err));
