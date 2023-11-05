@@ -13,21 +13,18 @@ html(lang="en")
 
     p
         strong Incoming Links:
-        ul
         each link in details.incomingLinks
-            li
+            p
             a(href=link) #{link}
 
     p
         strong Outgoing Links:
-        ul
         each link in details.outgoingLinks
-            li
+            p
             a(href=link) #{link}
 
     p
         strong Word Frequency Information:
-        ul
         each word in details.wordFrequencies
-            li
-            | #{word.word} occurred #{word.frequency} times
+            p
+            |#{word.word} occurred #{word.frequency} times
