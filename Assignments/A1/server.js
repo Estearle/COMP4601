@@ -162,8 +162,16 @@ app.get("/fruits", async (req, res) => {
         // (3)boost (true)
         // Same thing as populating Top PageRank (Lab 5)
         if (boost === "true") {
-            fruitResult = await Page.find({}, 'title').sort({ 'pageRank': -1 });
-            searchResult = fruitResult.map(obj => obj.toObject());
+            fruitResult = await Page.find().sort({ 'pageRank': -1 }).lean();
+            searchResult = fruitResult.map(obj => {
+                return {
+                    name: "Earle Estrella, Rachel Wong",
+                    url: obj.link,
+                    score: obj.pageRank,
+                    title: obj.title,
+                    pr: obj.pageRank
+                };
+            });
         }
 
     }
@@ -259,8 +267,16 @@ app.get("/personal", async (req, res) => {
         // Same thing as populating Top PageRank (Lab 5)
         if (boost === "true") {
             console.log("(3)boost (true)");
-            gameResult = await Game.find({}, 'title').sort({ 'pageRank': -1 });
-            searchResult = gameResult.map(obj => obj.toObject());
+            gameResult = await Game.find().sort({ 'pageRank': -1 }).lean();
+            searchResult = gameResult.map(obj => {
+                return {
+                    name: "Earle Estrella, Rachel Wong",
+                    url: obj.link,
+                    score: obj.pageRank,
+                    title: obj.title,
+                    pr: obj.pageRank
+                };
+            });
         }
     }
 
