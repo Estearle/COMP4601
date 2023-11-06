@@ -189,7 +189,6 @@ const c = new Crawler({
                 }
             }
 
-
             console.log(game.length);
             //crawling
             game.forEach(g => {

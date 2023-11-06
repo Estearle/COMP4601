@@ -61,7 +61,7 @@ loadData()
         
         // console.log(all);
         adjacent = Matrix.zeros(all.size, all.size);
-        //Initial GameRank vector
+        //Initial PageRank vector
         x0 = Matrix.eye(1, all.size).fill(1 / all.size);
         // 1/N matrix
         m = Matrix.ones(all.size, all.size).mul(1 / all.size);
@@ -117,18 +117,18 @@ loadData()
         // console.log(adjacent.mul(1-alpha));
         // console.log(m.mul(alpha))
         // console.log(resultingMatrix)
-        let GameRankVector = computeGameRank(resultingMatrix, x0);
-        console.log('GameRank Values:', GameRankVector);
+        let PageRankVector = computeGameRank(resultingMatrix, x0);
+        console.log('GameRank Values:', PageRankVector);
 
         // Create an array of { title, rank } objects for display purposes
         let rankedGames = [];
-        let GameRankArray = GameRankVector.to1DArray();
+        let PageRankArray = PageRankVector.to1DArray();
         for (let i = 0; i < result.length; i++) {
             const searchResult = await Game.updateOne({ "link": result[i].link }, { $set: { "pageRank": GameRankArray[i] } });
             // console.log(result[i].title, ":", GameRankArray[i])
             rankedGames.push({
                 title: result[i].title,
-                rank: GameRankArray[i]
+                rank: PageRankArray[i]
             });
         }
 
