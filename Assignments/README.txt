@@ -35,7 +35,7 @@ Parts Completed:
     OpenStack information:
         name: rachelwong
         password:password
-        -IP:134.117.129.205
+        - IP:134.117.129.205
         - the server(server.js) should be running
         - instruction to run the server(if it stopped): node server.js
 
