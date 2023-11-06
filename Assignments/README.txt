@@ -31,19 +31,21 @@ Parts Completed:
         link to details (includes page title, original link to the page, incoming links to this page, outgoing links from this page and word frequency info)
 
     OpenStack :
+    Successfully integrated into the distributed search engine
+    OpenStack information:
         name: rachelwong
         password:password
         -IP:134.117.129.205
         - the server(server.js) should be running
         - instruction to run the server(if it stopped): node server.js
 
-        URLs the TA should use to query your search engine:
+    URLs the TA should use to query your search engine:
         http://134.117.130.17:3000/personal?q=tapestry
         http://134.117.130.17:3000/personal?q=spirit%20island&limit=5
+        http://134.117.130.17:3000/personal?q=spirit%20island&boost=true&limit=5
         http://134.117.130.17:3000/personal?q=mars&limit=15
-
-
-    Distrubuted Search Engine:
+        http://134.117.130.17:3000/fruit?q=apple
+        http://134.117.130.17:3000/fruit?q=apple&boost=true
     
 
-Video Link: 
+Video Link: https://youtu.be/WTH1iOPauBo
