@@ -48,4 +48,4 @@ Parts Completed:
         http://134.117.130.17:3000/fruit?q=apple&boost=true
     
 
-Video Link: https://youtu.be/WTH1iOPauBo
+Video Link: https://www.youtube.com/watch?v=WTH1iOPauBo
