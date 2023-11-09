@@ -1,0 +1,6 @@
+Lab 06
+Rachel Wong 101184274
+Earle Estrella 100907269
+
+1. The similarity calculation involves a summation for ‘all products that both users have provided ratings for’. How have you handled finding this set of products?
+2. How have you tried to minimize the runtime complexity of your implementation? Are there any other values you think could be pre-computed or that you could avoid recomputing many times? How?
