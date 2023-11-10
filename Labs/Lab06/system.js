@@ -46,11 +46,12 @@ function simCalculation(a, wholeMatrix, row, col) {
         let count  =0;
         for (let j = 0; j < wholeMatrix[i].length; j++) {
             if (wholeMatrix[i][j] !== -1 ) {
-                average += wholeMatrix[i][j];
+                average += wholeMatrix[i][j]; 
                 count++;
             }
         }
         avg.push(average / count);
+        
     }
     //Pearson's correlation coefficient 
     for (let i = 0; i < wholeMatrix.length; i++) {
@@ -62,7 +63,7 @@ function simCalculation(a, wholeMatrix, row, col) {
         let sumA = 0;
         let sumB = 0;
         for (let j = 0; j < wholeMatrix[row].length; j++) {
-            if (row !==i && wholeMatrix[i][j] != -1) {
+            if (row !==i && wholeMatrix[i][j] != -1 && wholeMatrix[row][j] != -1 ) {
                 // console.log(wholeMatrix[i],wholeMatrix[i][j]);
                 let a = wholeMatrix[row][j] - avg[row];
                 let b = wholeMatrix[i][j] - avg[i];
