@@ -85,3 +85,67 @@ function simCalculation(a, wholeMatrix, row, col) {
     return result;
 }
 
+// Function that calculates the average ratings for each user
+function calculateUserAverages(matrix) {
+    let averages = matrix.map(userRatings => {
+        let sum = 0;
+        let count = 0;
+        userRatings.forEach(rating => {
+            if (rating !== -1) {
+                sum += rating;
+                count++;
+            }
+        });
+        if (count === 0) {
+            return 0;
+        } else {
+            return sum / count;
+        }
+    });
+    console.log(averages);
+    return averages;
+}
+
+// Function to calculate the predicted rating for a user and an item
+function calculatePredictedRating(userIndex, itemIndex, matrix, avg, similarities) {
+    let num = 0;
+    let denom = 0;
+
+    // Iterate over all other users
+    for (let otherUserIndex = 0; otherUserIndex < matrix.length; otherUserIndex++) {
+        if (otherUserIndex !== userIndex && matrix[otherUserIndex][itemIndex] !== -1) {
+            let simScore = similarities[userIndex + ',' + otherUserIndex];
+            console.log("simScore: " + simScore + " | userRating: " + matrix[otherUserIndex][itemIndex] + " | avgRating: " + avg[otherUserIndex]);
+            if (simScore !== undefined && simScore > 0) {
+                num += simScore * (matrix[otherUserIndex][itemIndex] - avg[otherUserIndex]);
+                denom += simScore;
+            }
+        }
+    }
+
+    if (denom === 0) {
+        return avg[userIndex]; // If no similar users, return the user's average rating
+    }
+
+    return Number((avg[userIndex] + num / denom).toFixed(2)); // Otherwise, return the predicted rating
+}
+
+// Use the functions in the prediction process
+
+information.forEach(info => {
+    // Calculate the average ratings using the separate function
+    let avg = calculateUserAverages(info.matrix);
+
+    info.matrix.forEach((userRatings, userIndex) => {
+        userRatings.forEach((rating, itemIndex) => {
+            if (rating === -1) {
+                let similarities = simCalculation(userRatings, info.matrix, userIndex, itemIndex);
+                let predictedRating = calculatePredictedRating(userIndex, itemIndex, info.matrix, avg, similarities);
+                info.result[userIndex][itemIndex] = predictedRating;
+            }
+        });
+    });
+
+    // Log the updated matrix with predicted ratings
+    console.log(info.result);
+});
