@@ -92,59 +92,81 @@ function simCalculation(a, wholeMatrix, row, col) {
 
 // Function to calculate the predicted rating for a user and an item
 function calculatePredictedRating(userIndex, itemIndex, matrix, avg, similarities) {
-    let allNegative = true;
-    let leastNegativeSimScores = [-Infinity, -Infinity]; // Initialize with the lowest possible numbers
-    let lowestPairs = ["", ""]; // To keep track of the keys of the least negative similarity scores
+    // let allNegative = true;
+    // let leastNegativeSimScores = [-Infinity, -Infinity]; // Initialize with the lowest possible numbers
+    // let lowestPairs = ["", ""]; // To keep track of the keys of the least negative similarity scores
     
+    // for (let pair in similarities) {
+    //     if (similarities[pair] > 0) {
+    //         allNegative = false;
+    //         break; // Exit the loop if there is any positive similarity score
+    //     } else if (similarities[pair] > leastNegativeSimScores[1]) {
+    //         // Found a new least negative similarity score
+    //         if (similarities[pair] > leastNegativeSimScores[0]) {
+    //             // The new score is higher than both, shift the scores
+    //             leastNegativeSimScores[1] = leastNegativeSimScores[0];
+    //             lowestPairs[1] = lowestPairs[0];
+    //             leastNegativeSimScores[0] = similarities[pair];
+    //             lowestPairs[0] = pair;
+    //         } else {
+    //             // The new score is only higher than the second least negative
+    //             leastNegativeSimScores[1] = similarities[pair];
+    //             lowestPairs[1] = pair;
+    //         }
+    //     }
+    // }
+
+    // let num = 0;
+    // let denom = 0;
+    // if (allNegative && leastNegativeSimScores[0] !== -Infinity) {
+    //     // Use the least negative similarity score for prediction
+    //     let parts1 = lowestPairs[0].split(',').map(part => parseInt(part, 10));
+    //     let user1 = parts1[1];
+    //     num += leastNegativeSimScores[0] * (matrix[user1][itemIndex] - avg[user1]);
+    //     denom += leastNegativeSimScores[0];
+    
+    //     if (leastNegativeSimScores[1] !== -Infinity) {
+    //         // Use the second least negative similarity score for prediction if available
+    //         let parts2 = lowestPairs[1].split(',').map(part => parseInt(part, 10));
+    //         let user2 = parts2[1];
+    //         num += leastNegativeSimScores[1] * (matrix[user2][itemIndex] - avg[user2]);
+    //         denom += leastNegativeSimScores[1];
+    //     }
+    // } else { 
+    //     // Iterate over all other users
+    //     for (let otherUserIndex = 0; otherUserIndex < matrix.length; otherUserIndex++) {
+    //         if (otherUserIndex !== userIndex && matrix[otherUserIndex][itemIndex] !== -1) {
+    //             let simScore = similarities[userIndex + ',' + otherUserIndex];
+    //             if (simScore !== undefined && simScore > 0) {
+    //                 num += simScore * (matrix[otherUserIndex][itemIndex] - avg[otherUserIndex]);
+    //                 denom += simScore;
+    //             }
+    //         }
+    //     }
+    // }
+
+    // Collect all similarity scores along with their pairs
+    let simScoresWithPairs = [];
     for (let pair in similarities) {
-        if (similarities[pair] > 0) {
-            allNegative = false;
-            break; // Exit the loop if there is any positive similarity score
-        } else if (similarities[pair] > leastNegativeSimScores[1]) {
-            // Found a new least negative similarity score
-            if (similarities[pair] > leastNegativeSimScores[0]) {
-                // The new score is higher than both, shift the scores
-                leastNegativeSimScores[1] = leastNegativeSimScores[0];
-                lowestPairs[1] = lowestPairs[0];
-                leastNegativeSimScores[0] = similarities[pair];
-                lowestPairs[0] = pair;
-            } else {
-                // The new score is only higher than the second least negative
-                leastNegativeSimScores[1] = similarities[pair];
-                lowestPairs[1] = pair;
-            }
-        }
+        simScoresWithPairs.push({ score: similarities[pair], pair: pair });
     }
 
-    let num = 0;
-    let denom = 0;
-    if (allNegative && leastNegativeSimScores[0] !== -Infinity) {
-        // Use the least negative similarity score for prediction
-        let parts1 = lowestPairs[0].split(',').map(part => parseInt(part, 10));
-        let user1 = parts1[1];
-        num += leastNegativeSimScores[0] * (matrix[user1][itemIndex] - avg[user1]);
-        denom += leastNegativeSimScores[0];
-    
-        if (leastNegativeSimScores[1] !== -Infinity) {
-            // Use the second least negative similarity score for prediction if available
-            let parts2 = lowestPairs[1].split(',').map(part => parseInt(part, 10));
-            let user2 = parts2[1];
-            num += leastNegativeSimScores[1] * (matrix[user2][itemIndex] - avg[user2]);
-            denom += leastNegativeSimScores[1];
+    // Sort the scores to get the two highest (positive or negative)
+    simScoresWithPairs.sort((a, b) => b.score - a.score);
+    let topTwoSimScores = simScoresWithPairs.slice(0, 2); // Get the top two
+
+    let num = 0; // Numerator for the prediction calculation
+    let denom = 0; // Denominator for the prediction calculation
+
+    // Use the two highest similarity scores for prediction
+    topTwoSimScores.forEach(sim => {
+        let parts = sim.pair.split(',').map(part => parseInt(part, 10));
+        let otherUserIndex = parts[1];
+        if (matrix[otherUserIndex][itemIndex] !== -1) {
+            num += sim.score * (matrix[otherUserIndex][itemIndex] - avg[otherUserIndex]);
+            denom += sim.score;
         }
-    } else { 
-        // Iterate over all other users
-        for (let otherUserIndex = 0; otherUserIndex < matrix.length; otherUserIndex++) {
-            if (otherUserIndex !== userIndex && matrix[otherUserIndex][itemIndex] !== -1) {
-                let simScore = similarities[userIndex + ',' + otherUserIndex];
-                // console.log("userIndex: " + userIndex + " | otherUserIndex: " + otherUserIndex + " | simScore: " + simScore + " | userRating: " + matrix[otherUserIndex][itemIndex] + " | avgRating: " + avg[otherUserIndex]);
-                if (simScore !== undefined && simScore > 0) {
-                    num += simScore * (matrix[otherUserIndex][itemIndex] - avg[otherUserIndex]);
-                    denom += simScore;
-                }
-            }
-        }
-    }
+    });
 
     // Compute the predicted rating, but avoid division by zero
     let predictedRating = avg[userIndex];
