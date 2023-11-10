@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require('path');
 
 let information = [];
+let newVal = [];
 
 //read all the txt files
 let reader = fs.readdirSync('txt');
@@ -28,7 +29,11 @@ for (let i = 0; i < matrix.length; i++) {
         if (matrix[i][j].includes(-1)) {
             for (let z = 0; z < matrix[i][j].length; z++) {
                 if (matrix[i][j][z] === -1) {
-                    console.log(simCalculation(matrix[i][j], matrix[i], j, z));
+                    
+                    // console.log(simCalculation(matrix[i][j], matrix[i], j, z));
+                    let similarities = simCalculation(matrix[i][j], matrix[i], j, z);
+                    let predictedRating = calculatePredictedRating(j, z, matrix[i], avg, similarities);
+                    newVal.push(predictedRating);
                 }
             }
         }
@@ -85,67 +90,64 @@ function simCalculation(a, wholeMatrix, row, col) {
     return result;
 }
 
-// Function that calculates the average ratings for each user
-function calculateUserAverages(matrix) {
-    let averages = matrix.map(userRatings => {
-        let sum = 0;
-        let count = 0;
-        userRatings.forEach(rating => {
-            if (rating !== -1) {
-                sum += rating;
-                count++;
-            }
-        });
-        if (count === 0) {
-            return 0;
-        } else {
-            return sum / count;
-        }
-    });
-    console.log(averages);
-    return averages;
-}
-
 // Function to calculate the predicted rating for a user and an item
 function calculatePredictedRating(userIndex, itemIndex, matrix, avg, similarities) {
+    let allNegative = true;
+    let leastNegativeSimScore = -1; // Keep track of the least negative similarity score
+    let lowestPair;
+    for (let pair in similarities) {
+        if (similarities[pair] > 0) {
+            allNegative = false;
+        } else if (leastNegativeSimScore < similarities[pair]) {
+            leastNegativeSimScore = similarities[pair];
+            lowestPair = pair;
+        }
+    }
+
     let num = 0;
     let denom = 0;
-
-    // Iterate over all other users
-    for (let otherUserIndex = 0; otherUserIndex < matrix.length; otherUserIndex++) {
-        if (otherUserIndex !== userIndex && matrix[otherUserIndex][itemIndex] !== -1) {
-            let simScore = similarities[userIndex + ',' + otherUserIndex];
-            console.log("simScore: " + simScore + " | userRating: " + matrix[otherUserIndex][itemIndex] + " | avgRating: " + avg[otherUserIndex]);
-            if (simScore !== undefined && simScore > 0) {
-                num += simScore * (matrix[otherUserIndex][itemIndex] - avg[otherUserIndex]);
-                denom += simScore;
+    if (allNegative) {
+        let parts = lowestPair.split(',').map(part => parseFloat(part, 10));
+        let user = parts[1];
+        console.log(leastNegativeSimScore);
+        console.log(parts);
+        denom = leastNegativeSimScore;
+        num = leastNegativeSimScore*(matrix[user][itemIndex] - avg[user]);
+    } else { 
+        // Iterate over all other users
+        for (let otherUserIndex = 0; otherUserIndex < matrix.length; otherUserIndex++) {
+            if (otherUserIndex !== userIndex && matrix[otherUserIndex][itemIndex] !== -1) {
+                let simScore = similarities[userIndex + ',' + otherUserIndex];
+                // console.log("userIndex: " + userIndex + " | otherUserIndex: " + otherUserIndex + " | simScore: " + simScore + " | userRating: " + matrix[otherUserIndex][itemIndex] + " | avgRating: " + avg[otherUserIndex]);
+                if (simScore !== undefined && simScore > 0) {
+                    num += simScore * (matrix[otherUserIndex][itemIndex] - avg[otherUserIndex]);
+                    denom += simScore;
+                }
             }
         }
     }
 
-    if (denom === 0) {
-        return avg[userIndex]; // If no similar users, return the user's average rating
+    // Compute the predicted rating, but avoid division by zero
+    let predictedRating = avg[userIndex];
+    if (denom !== 0) {
+        predictedRating += num / denom;
     }
 
-    return Number((avg[userIndex] + num / denom).toFixed(2)); // Otherwise, return the predicted rating
+    return Number(predictedRating.toFixed(2));
+
 }
-
-// Use the functions in the prediction process
-
-information.forEach(info => {
-    // Calculate the average ratings using the separate function
-    let avg = calculateUserAverages(info.matrix);
-
-    info.matrix.forEach((userRatings, userIndex) => {
-        userRatings.forEach((rating, itemIndex) => {
-            if (rating === -1) {
-                let similarities = simCalculation(userRatings, info.matrix, userIndex, itemIndex);
-                let predictedRating = calculatePredictedRating(userIndex, itemIndex, info.matrix, avg, similarities);
-                info.result[userIndex][itemIndex] = predictedRating;
+console.log(avg);
+console.log(newVal);
+let index = 0;
+for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j].includes(-1)) {
+            for (let z = 0; z < matrix[i][j].length; z++) {
+                if (matrix[i][j][z] === -1) {
+                    matrix[i][j][z] = newVal[index++];
+                }
             }
-        });
-    });
-
-    // Log the updated matrix with predicted ratings
-    console.log(info.result);
-});
+        }
+    }
+}
+console.log(matrix);
