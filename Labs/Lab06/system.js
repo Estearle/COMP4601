@@ -4,6 +4,7 @@ const path = require('path');
 
 let information = [];
 let newVal = [];
+let missingVal = [];
 let NEIGHBOURHOOD_SIZE = 2;
 
 //read all the txt files
@@ -28,12 +29,13 @@ let matrix = information.map(each => each.matrix);
 for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j].includes(-1)) {
-            for (let z = 0; z < matrix[i][j].length; z++) {
-                if (matrix[i][j][z] === -1) {
-                    console.log(simCalculation(matrix[i][j], matrix[i], j, z));
-                    let similarities = simCalculation(matrix[i][j], matrix[i], j, z);
-                    let predictedRating = calculatePredictedRating(j, z, matrix[i], avg, similarities, NEIGHBOURHOOD_SIZE);
+            for (let k = 0; k < matrix[i][j].length; k++) {
+                if (matrix[i][j][k] === -1) {
+                    console.log(simCalculation(matrix[i][j], matrix[i], j, k));
+                    let similarities = simCalculation(matrix[i][j], matrix[i], j, k);
+                    let predictedRating = calculatePredictedRating(j, k, matrix[i], avg, similarities, NEIGHBOURHOOD_SIZE);
                     newVal.push(predictedRating);
+                    missingVal.push({i,j,k});
                 }
             }
         }
@@ -118,18 +120,17 @@ function calculatePredictedRating(userIndex, itemIndex, matrix, avg, similaritie
     return Number(predictedRating.toFixed(2));
 
 }
-console.log(avg);
-console.log(newVal);
+
+// set of prints to print
+// console.log(avg);
+// console.log(newVal);
+// console.log(missingVal);
+
 let index = 0;
-for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j].includes(-1)) {
-            for (let z = 0; z < matrix[i][j].length; z++) {
-                if (matrix[i][j][z] === -1) {
-                    matrix[i][j][z] = newVal[index++];
-                }
-            }
-        }
-    }
-}
+
+missingVal.forEach(pos => {
+    let {i,j,k} = pos;
+    matrix[i][j][k] = newVal[index++];
+})
+
 console.log(matrix);
