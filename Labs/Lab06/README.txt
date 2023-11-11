@@ -19,4 +19,4 @@ Earle Estrella 100907269
     2. The similarity scores between 2 user can be stored such that user 0 and user 1 is calculated first, then when it reaches user 1 to compare to user 0, it should consider that
        the first comparison between the two users has been done and is stored.
 
-Link:
+Link: https://www.youtube.com/watch?v=S9ZD2WP-jgg
