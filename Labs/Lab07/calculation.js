@@ -119,15 +119,17 @@ function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, av
         .sort((a, b) => b.similarity - a.similarity);
     
     // console.log(sortedSimilarities);
-    console.log("This is for position: " + userIndex + "," + itemIndex);
+    // console.log("This is for position: " + userIndex + "," + itemIndex);
     // Take only the top neighbourhoodSize similar items
-    sortedSimilarities = sortedSimilarities.slice(0, neighbourhoodSize);
-    console.log(sortedSimilarities);
+    sortedSimilarities = sortedSimilarities.filter(sim => matrix[userIndex][sim.index] !== -1).slice(0, neighbourhoodSize);
+    // console.log(sortedSimilarities);
 
     let sumNum = 0;
     let sumDenom = 0;
     sortedSimilarities.forEach(sim => {
         if (matrix[userIndex][sim.index] !== -1 && sim.similarity > 0) {
+            console.log("Multiplying the rating of: ");
+            console.log(matrix[userIndex][sim.index]);
             sumNum += sim.similarity * matrix[userIndex][sim.index];
             sumDenom += sim.similarity;
         }
@@ -153,7 +155,7 @@ for (let info of information) {
 }
 
 // console.log(newVal);
-console.log( allSimilarities);
+// console.log(allSimilarities);
 
 for (let info of information) {
     console.log(info.matrix);
