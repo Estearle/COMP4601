@@ -3,7 +3,7 @@ const path = require('path');
 
 let information = [];
 let newVal = [];
-let missingVal = [];
+let allSimilarities = {};
 let NEIGHBOURHOOD_SIZE = 2;
 
 //read all the txt files in test directory
@@ -12,7 +12,7 @@ reader.forEach(file => {
     let fileData = fs.readFileSync(path.join('test', file), 'utf-8');
     let avg = [];
     let unknownPos = [];
-    let obj = fileData.split("\n");
+    let obj = fileData.replace(/\r/g,'').split("\n");
     let userN = obj[1];
     let itemM = obj[2];
     let matrix = obj.slice(3);
@@ -41,35 +41,41 @@ reader.forEach(file => {
     information.push({ "user": userN.split(" "), "itemM": itemM.split(" "), "matrix": matrix ,"position":unknownPos,"average":avg});
 });
 
-
-for(let i of information){
-    for(let j = 0 ; j < i.position.length;j++){
-        let pos = i.position[j];
-        let similaries = simCalculation(i.matrix,pos.row,pos.col);
-        console.log(similaries);
-    }
-   
-}
-// // check the position of -1
-// let matrix = information.map(each => each.matrix);
-// for (let i = 0; i < matrix.length; i++) {
-//     for (let j = 0; j < matrix[i].length; j++) {
-//         if (matrix[i][j].includes(-1)) {
-//             for (let k = 0; k < matrix[i][j].length; k++) {
-//                 if (matrix[i][j][k] === -1) {
-//                     console.log(simCalculation(matrix[i][j], matrix[i], j, k));
-//                     let similarities = simCalculation(matrix[i][j], matrix[i], j, k);
-//                     let predictedRating = calculatePredictedRating(j, k, matrix[i], avg, similarities, NEIGHBOURHOOD_SIZE);
-//                     newVal.push(predictedRating);
-//                     missingVal.push({i,j,k});
-//                 }
-//             }
-//         }
+// for(let i of information){
+//     for(let j = 0 ; j < i.position.length;j++){
+//         let pos = i.position[j];
+//         similarities[j] = simCalculation(i.matrix,pos.row,pos.col, i.average);
+//         // console.log(similarities[j]);
 //     }
 // }
 
 
-function simCalculation(wholeMatrix, row, col) {
+for(let i of information){
+    allSimilarities[i.user] = {}; // Initialize an object for each user
+    for(let pos of i.position){
+        // Calculate and store the similarities for the specific missing rating position (row, col)
+        allSimilarities[i.user][pos.col] = simCalculation(i.matrix, pos.row, pos.col, i.average);
+    }
+}
+
+
+for(let info of information){
+    for(let pos of info.position){
+        // Retrieve the pre-calculated similarities for the specific missing value
+        let itemSimilarities = allSimilarities[info.user][pos.col];
+        let predicted = calculatePredictedRating(pos.row, pos.col, itemSimilarities, info.matrix, info.average, NEIGHBOURHOOD_SIZE);
+        
+        // Update the newVal array with the predicted rating, not the original matrix
+        newVal.push({
+            user: info.user[pos.row],
+            item: info.itemM[pos.col],
+            predictedRating: predicted
+        });
+        // missingVal.push(pos);
+    }
+}
+
+function simCalculation(wholeMatrix, row, col, avg) {
 
     // console.log(wholeMatrix);
     let result = {};
@@ -86,9 +92,12 @@ function simCalculation(wholeMatrix, row, col) {
 
         for (let j = 0; j < wholeMatrix.length; j++) {
             if (wholeMatrix[j][col] !== -1 && wholeMatrix[j][i] !== -1) {
-                product += wholeMatrix[j][col] * wholeMatrix[j][i];
-                sumA += wholeMatrix[j][col] * wholeMatrix[j][col];
-                sumB += wholeMatrix[j][i] * wholeMatrix[j][i];
+                product += (wholeMatrix[j][col] - avg[j]) * (wholeMatrix[j][i] - avg[j]) ;
+                sumA += (wholeMatrix[j][col] - avg[j]) * (wholeMatrix[j][col] - avg[j]);
+                sumB += (wholeMatrix[j][i] - avg[j]) * (wholeMatrix[j][i] - avg[j]);
+                // product += wholeMatrix[j][col] * wholeMatrix[j][i];
+                // sumA += wholeMatrix[j][col] * wholeMatrix[j][col];
+                // sumB += wholeMatrix[j][i] * wholeMatrix[j][i];  
             }
         }
 
@@ -100,4 +109,52 @@ function simCalculation(wholeMatrix, row, col) {
         }
     }
     return result;
+}
+
+function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, avg, neighbourhoodSize) {
+    // Convert the similarities object to an array and sort by similarity score
+    let sortedSimilarities = Object.keys(similarities)
+        .map(key => ({ index: parseInt(key.split(',')[1]), similarity: similarities[key] }))
+        .filter(sim => sim.index !== itemIndex) // Exclude similarity with the item itself
+        .sort((a, b) => b.similarity - a.similarity);
+    
+    // console.log(sortedSimilarities);
+    console.log("This is for position: " + userIndex + "," + itemIndex);
+    // Take only the top neighbourhoodSize similar items
+    sortedSimilarities = sortedSimilarities.slice(0, neighbourhoodSize);
+    console.log(sortedSimilarities);
+
+    let sumNum = 0;
+    let sumDenom = 0;
+    sortedSimilarities.forEach(sim => {
+        if (matrix[userIndex][sim.index] !== -1 && sim.similarity > 0) {
+            sumNum += sim.similarity * matrix[userIndex][sim.index];
+            sumDenom += sim.similarity;
+        }
+    });
+
+    // If there are no similar items with a positive similarity, return the user's average rating
+    if (sumDenom === 0) {
+        return avg[userIndex];
+    }
+
+    // Otherwise, return the predicted rating
+    return (sumNum / sumDenom);
+}
+
+for (let info of information) {
+    for (let prediction of newVal) {
+        let userIndex = info.user.indexOf(prediction.user); // Get the index of the user
+        let itemIndex = info.itemM.indexOf(prediction.item); // Get the index of the item
+        if (userIndex !== -1 && itemIndex !== -1) {
+            info.matrix[userIndex][itemIndex] = prediction.predictedRating;
+        }
+    }
+}
+
+// console.log(newVal);
+console.log( allSimilarities);
+
+for (let info of information) {
+    console.log(info.matrix);
 }
