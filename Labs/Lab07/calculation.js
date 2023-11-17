@@ -71,7 +71,6 @@ for(let info of information){
             item: info.itemM[pos.col],
             predictedRating: predicted
         });
-        // missingVal.push(pos);
     }
 }
 
@@ -116,20 +115,14 @@ function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, av
     let sortedSimilarities = Object.keys(similarities)
         .map(key => ({ index: parseInt(key.split(',')[1]), similarity: similarities[key] }))
         .filter(sim => sim.index !== itemIndex) // Exclude similarity with the item itself
-        .sort((a, b) => b.similarity - a.similarity);
-    
-    // console.log(sortedSimilarities);
-    // console.log("This is for position: " + userIndex + "," + itemIndex);
-    // Take only the top neighbourhoodSize similar items
-    sortedSimilarities = sortedSimilarities.filter(sim => matrix[userIndex][sim.index] !== -1).slice(0, neighbourhoodSize);
-    // console.log(sortedSimilarities);
+        .sort((a, b) => b.similarity - a.similarity)
+        .filter(sim => matrix[userIndex][sim.index] !== -1)
+        .slice(0, neighbourhoodSize);
 
     let sumNum = 0;
     let sumDenom = 0;
     sortedSimilarities.forEach(sim => {
         if (matrix[userIndex][sim.index] !== -1 && sim.similarity > 0) {
-            console.log("Multiplying the rating of: ");
-            console.log(matrix[userIndex][sim.index]);
             sumNum += sim.similarity * matrix[userIndex][sim.index];
             sumDenom += sim.similarity;
         }
@@ -140,22 +133,19 @@ function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, av
         return avg[userIndex];
     }
 
-    // Otherwise, return the predicted rating
     return (sumNum / sumDenom);
 }
 
 for (let info of information) {
     for (let prediction of newVal) {
-        let userIndex = info.user.indexOf(prediction.user); // Get the index of the user
-        let itemIndex = info.itemM.indexOf(prediction.item); // Get the index of the item
+        let userIndex = info.user.indexOf(prediction.user);
+        let itemIndex = info.itemM.indexOf(prediction.item);
         if (userIndex !== -1 && itemIndex !== -1) {
             info.matrix[userIndex][itemIndex] = prediction.predictedRating;
         }
     }
 }
 
-// console.log(newVal);
-// console.log(allSimilarities);
 
 for (let info of information) {
     console.log(info.matrix);
