@@ -41,14 +41,6 @@ reader.forEach(file => {
     information.push({ "user": userN.split(" "), "itemM": itemM.split(" "), "matrix": matrix ,"position":unknownPos,"average":avg});
 });
 
-// for(let i of information){
-//     for(let j = 0 ; j < i.position.length;j++){
-//         let pos = i.position[j];
-//         similarities[j] = simCalculation(i.matrix,pos.row,pos.col, i.average);
-//         // console.log(similarities[j]);
-//     }
-// }
-
 
 for(let i of information){
     allSimilarities[i.user] = {}; // Initialize an object for each user
@@ -57,7 +49,6 @@ for(let i of information){
         allSimilarities[i.user][pos.col] = simCalculation(i.matrix, pos.row, pos.col, i.average);
     }
 }
-
 
 for(let info of information){
     for(let pos of info.position){
@@ -93,10 +84,7 @@ function simCalculation(wholeMatrix, row, col, avg) {
             if (wholeMatrix[j][col] !== -1 && wholeMatrix[j][i] !== -1) {
                 product += (wholeMatrix[j][col] - avg[j]) * (wholeMatrix[j][i] - avg[j]) ;
                 sumA += (wholeMatrix[j][col] - avg[j]) * (wholeMatrix[j][col] - avg[j]);
-                sumB += (wholeMatrix[j][i] - avg[j]) * (wholeMatrix[j][i] - avg[j]);
-                // product += wholeMatrix[j][col] * wholeMatrix[j][i];
-                // sumA += wholeMatrix[j][col] * wholeMatrix[j][col];
-                // sumB += wholeMatrix[j][i] * wholeMatrix[j][i];  
+                sumB += (wholeMatrix[j][i] - avg[j]) * (wholeMatrix[j][i] - avg[j]); 
             }
         }
 
@@ -116,7 +104,7 @@ function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, av
         .map(key => ({ index: parseInt(key.split(',')[1]), similarity: similarities[key] }))
         .filter(sim => sim.index !== itemIndex) // Exclude similarity with the item itself
         .sort((a, b) => b.similarity - a.similarity)
-        .filter(sim => matrix[userIndex][sim.index] !== -1)
+        .filter(sim => matrix[userIndex][sim.index] !== -1) // Exclude values that corresponds with a -1 rating
         .slice(0, neighbourhoodSize);
 
     let sumNum = 0;
