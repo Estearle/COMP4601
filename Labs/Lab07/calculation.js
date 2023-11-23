@@ -54,6 +54,7 @@ for(let info of information){
     for(let pos of info.position){
         // Retrieve the pre-calculated similarities for the specific missing value
         let itemSimilarities = allSimilarities[info.user][pos.col];
+        console.log(itemSimilarities)
         let predicted = calculatePredictedRating(pos.row, pos.col, itemSimilarities, info.matrix, info.average, NEIGHBOURHOOD_SIZE);
         
         // Update the newVal array with the predicted rating, not the original matrix

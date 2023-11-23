@@ -8,8 +8,8 @@ let NEIGHBOURHOOD_SIZE = 5;
 //read txt file
 (async () =>{
     try {
-        let data = await fs.readFile('test.txt','utf8')
-        // let data = await fs.readFile('parsed-data-trimmed.txt', 'utf8');
+        // let data = await fs.readFile('test.txt','utf8')
+        let data = await fs.readFile('parsed-data-trimmed.txt', 'utf8');
         let knownPos = [];
         let avg = [];
         let lines = data.trim().split('\n');
@@ -26,14 +26,14 @@ let NEIGHBOURHOOD_SIZE = 5;
         for (let i = 0; i < matrix.length; i++) {
             let average = 0 ;
             for (let j = 0; j < matrix[i].length; j++) {
-                average += matrix[i][j];
                 if (matrix[i][j] !== 0) {
+                    average += matrix[i][j];
                     knownPos.push({ "row": i, "col": j });
                 }
             }
             avg.push(average/matrix[i].length);
         }
-        information.push({ "size": size, "user": row, "col": col, "matrix": matrix, "position": knownPos, "avg": avg});
+        information.push({ "size": size, "user": row, "col": col, "matrix": matrix, "position": knownPos, "average": avg});
         console.log(row.length,col.length)
     }
     catch (err) {
@@ -47,7 +47,7 @@ let NEIGHBOURHOOD_SIZE = 5;
         allSimilarities[i.user] = {}; // Initialize an object for each user
         for (let pos of i.position) {
             // Calculate and store the similarities for the specific missing rating position (row, col)
-            allSimilarities[i.user][pos.col] = simCalculation(i.matrix, pos.row, pos.col, i.avg);
+            allSimilarities[i.user][pos.col] = simCalculation(i.matrix, pos.row, pos.col, i.average);
             // Retrieve the pre-calculated similarities for the specific missing value
             let itemSimilarities = allSimilarities[i.user][pos.col];
             let predicted = calculatePredictedRating(pos.row, pos.col, itemSimilarities, i.matrix, i.average, NEIGHBOURHOOD_SIZE);
@@ -58,7 +58,7 @@ let NEIGHBOURHOOD_SIZE = 5;
                 predictedRating: predicted
             });
         }   
-        // console.log(allSimilarities)
+    
         for (let prediction of newVal) {
             let userIndex = i.user.indexOf(prediction.user);
             let itemIndex = i.col.indexOf(prediction.item);
@@ -69,7 +69,7 @@ let NEIGHBOURHOOD_SIZE = 5;
 
         console.log(i.matrix);
     }
-    
+  
 })
 
 .then(()=>{
@@ -94,7 +94,8 @@ let NEIGHBOURHOOD_SIZE = 5;
 
 function simCalculation(wholeMatrix, row, col, avg) {
     let result = {};
-    
+    let average = 0 ;
+    let count = 0 ;
     //Adjusted Cosine Similarity
     for (let i = 0; i < wholeMatrix[0].length; i++) {
         if (col === i) {
@@ -103,10 +104,11 @@ function simCalculation(wholeMatrix, row, col, avg) {
         let product = 0;
         let sumA = 0;
         let sumB = 0;
-
         for (let j = 0; j < wholeMatrix.length; j++) {
             if(j === row || wholeMatrix[j][col] === 0 || wholeMatrix[j][i] === 0) continue;
             if(wholeMatrix[j][col] !== 0 && wholeMatrix[j][i] !== 0){
+                average += avg[j];
+                count++;
                 let a = (wholeMatrix[j][col] - avg[j]);
                 let b = (wholeMatrix[j][i] - avg[j]);
                 product += a * b ;
@@ -120,7 +122,13 @@ function simCalculation(wholeMatrix, row, col, avg) {
             result[col + ',' + i] = calculation;
         } else {
             //average rating score of the user without the current rating 
-            result[col + ',' + i ] = (avg[row]* wholeMatrix[0].length - wholeMatrix[row][col])/ (wholeMatrix[0].length-1);
+            // console.log(average,count)
+            if(count === 0 ){
+                result[col + ',' + i ] = 0;
+            }
+            else{
+                result[col + ',' + i ] = average/count;
+            }
             
         }
     }
