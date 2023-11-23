@@ -8,8 +8,8 @@ let NEIGHBOURHOOD_SIZE = 5;
 //read txt file
 (async () =>{
     try {
-        // let data = await fs.readFile('test.txt','utf8')
-        let data = await fs.readFile('parsed-data-trimmed.txt', 'utf8');
+        let data = await fs.readFile('test.txt','utf8')
+        // let data = await fs.readFile('parsed-data-trimmed.txt', 'utf8');
         let knownPos = [];
         let avg = [];
         let lines = data.trim().split('\n');
@@ -59,24 +59,33 @@ let NEIGHBOURHOOD_SIZE = 5;
             });
         }   
         // console.log(allSimilarities)
+        for (let prediction of newVal) {
+            let userIndex = i.user.indexOf(prediction.user);
+            let itemIndex = i.col.indexOf(prediction.item);
+            if (userIndex !== -1 && itemIndex !== -1) {
+                i.matrix[userIndex][itemIndex] = prediction.predictedRating;
+            }
+        }
+
+        console.log(i.matrix);
     }
     
 })
 
 .then(()=>{
-    for (let info of information) {
-        for (let prediction of newVal) {
-            let userIndex = info.user.indexOf(prediction.user);
-            let itemIndex = info.col.indexOf(prediction.item);
-            if (userIndex !== -1 && itemIndex !== -1) {
-                info.matrix[userIndex][itemIndex] = prediction.predictedRating;
-            }
-        }
-    }
+    // for (let info of information) {
+    //     for (let prediction of newVal) {
+    //         let userIndex = info.user.indexOf(prediction.user);
+    //         let itemIndex = info.col.indexOf(prediction.item);
+    //         if (userIndex !== -1 && itemIndex !== -1) {
+    //             info.matrix[userIndex][itemIndex] = prediction.predictedRating;
+    //         }
+    //     }
+    // }
     
-    for (let info of information) {
-        console.log(info.matrix);
-    }
+    // for (let info of information) {
+    //     console.log(info.matrix);
+    // }
 })
 
 .catch(error =>{
@@ -96,11 +105,13 @@ function simCalculation(wholeMatrix, row, col, avg) {
         let sumB = 0;
 
         for (let j = 0; j < wholeMatrix.length; j++) {
-            if(j === row) continue;
+            if(j === row || wholeMatrix[j][col] === 0 || wholeMatrix[j][i] === 0) continue;
             if(wholeMatrix[j][col] !== 0 && wholeMatrix[j][i] !== 0){
-                product += (wholeMatrix[j][col] - avg[j]) * (wholeMatrix[j][i] - avg[j]);
-                sumA += (wholeMatrix[j][col] - avg[j]) * (wholeMatrix[j][col] - avg[j]);
-                sumB += (wholeMatrix[j][i] - avg[j]) * (wholeMatrix[j][i] - avg[j]);
+                let a = (wholeMatrix[j][col] - avg[j]);
+                let b = (wholeMatrix[j][i] - avg[j]);
+                product += a * b ;
+                sumA += a * a;
+                sumB += b * b;
             }
         }
 
@@ -109,7 +120,7 @@ function simCalculation(wholeMatrix, row, col, avg) {
             result[col + ',' + i] = calculation;
         } else {
             //average rating score of the user without the current rating 
-            result[col + ',' + i] = (avg[row]* wholeMatrix[0].length - wholeMatrix[row][col])/ (wholeMatrix[0].length-1);
+            result[col + ',' + i ] = (avg[row]* wholeMatrix[0].length - wholeMatrix[row][col])/ (wholeMatrix[0].length-1);
             
         }
     }
