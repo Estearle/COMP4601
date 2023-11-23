@@ -28,6 +28,7 @@ let NEIGHBOURHOOD_SIZE = 5;
             for (let j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j] !== 0) {
                     average += matrix[i][j];
+                    //push when it has rating 
                     knownPos.push({ "row": i, "col": j });
                 }
             }
@@ -66,26 +67,9 @@ let NEIGHBOURHOOD_SIZE = 5;
                 i.matrix[userIndex][itemIndex] = prediction.predictedRating;
             }
         }
-
         console.log(i.matrix);
     }
   
-})
-
-.then(()=>{
-    // for (let info of information) {
-    //     for (let prediction of newVal) {
-    //         let userIndex = info.user.indexOf(prediction.user);
-    //         let itemIndex = info.col.indexOf(prediction.item);
-    //         if (userIndex !== -1 && itemIndex !== -1) {
-    //             info.matrix[userIndex][itemIndex] = prediction.predictedRating;
-    //         }
-    //     }
-    // }
-    
-    // for (let info of information) {
-    //     console.log(info.matrix);
-    // }
 })
 
 .catch(error =>{
@@ -95,7 +79,6 @@ let NEIGHBOURHOOD_SIZE = 5;
 function simCalculation(wholeMatrix, row, col, avg) {
     let result = {};
     let average = 0 ;
-    let count = 0 ;
     //Adjusted Cosine Similarity
     for (let i = 0; i < wholeMatrix[0].length; i++) {
         if (col === i) {
@@ -108,7 +91,6 @@ function simCalculation(wholeMatrix, row, col, avg) {
             if(j === row || wholeMatrix[j][col] === 0 || wholeMatrix[j][i] === 0) continue;
             if(wholeMatrix[j][col] !== 0 && wholeMatrix[j][i] !== 0){
                 average += avg[j];
-                count++;
                 let a = (wholeMatrix[j][col] - avg[j]);
                 let b = (wholeMatrix[j][i] - avg[j]);
                 product += a * b ;
@@ -122,14 +104,8 @@ function simCalculation(wholeMatrix, row, col, avg) {
             result[col + ',' + i] = calculation;
         } else {
             //average rating score of the user without the current rating 
-            // console.log(average,count)
-            if(count === 0 ){
-                result[col + ',' + i ] = 0;
-            }
-            else{
-                result[col + ',' + i ] = average/count;
-            }
-            
+            result[col + ',' + i ] = average/wholeMatrix[0].length-1;
+    
         }
     }
     return result;
@@ -141,16 +117,16 @@ function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, av
         .map(key => ({ index: parseInt(key.split(',')[1]), similarity: similarities[key] }))
         .filter(sim => sim.index !== itemIndex) // Exclude similarity with the item itself
         .sort((a, b) => b.similarity - a.similarity)
-        // .filter(sim => matrix[userIndex][sim.index] !== -1) // Exclude values that corresponds with a -1 rating
-        // .slice(0, neighbourhoodSize);
 
+    // use as many neighbours as possible
+    // min neighbours : [1,5]
     let sumNum = 0;
     let sumDenom = 0;
     let adjustedSize = Math.min(sortedSimilarities.length,neighbourhoodSize);
     let sorted = sortedSimilarities.slice(0,adjustedSize);
 
     sorted.forEach(sim => {
-        if (matrix[userIndex][sim.index] !== -1 && sim.similarity > 0) {
+        if (matrix[userIndex][sim.index] !== 0 && sim.similarity > 0) {
             sumNum += sim.similarity * matrix[userIndex][sim.index];
             sumDenom += sim.similarity;
         }
