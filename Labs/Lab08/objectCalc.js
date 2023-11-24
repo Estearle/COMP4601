@@ -10,6 +10,7 @@ let underPred = 0;
 let overPred = 0;
 let noNeighbour = 0;
 let sumNeighbour = 0;
+let errorSum = 0;
 
 //read txt file
 (async () => {
@@ -79,11 +80,12 @@ let sumNeighbour = 0;
                     underPred++;
                 } else if (predicted > 5) {
                     overPred++;
-                }                
+                }
+                errorSum += Math.abs(predicted - ratings[user][itemA]);            
                 totalPred++;
                 // Update the predictions object with the predicted rating, not the original matrix
-                predictions[user] = {};
-                predictions[user][itemA] = predicted;
+                // predictions[user] = {};
+                // predictions[user][itemA] = predicted;
 
             }
         }
@@ -102,7 +104,7 @@ let sumNeighbour = 0;
         console.log("Total over predictions (> 5): " + overPred);
         console.log("Number of cases with no valid neighbours: " + noNeighbour);
         console.log("Average neighbours used: " + sumNeighbour/totalPred);
-        console.log("MAE = " + calculateMAE(predictions, ratings));
+        console.log("MAE = " + errorSum/totalPred);
         console.timeEnd("timerMAE");
 
     })
@@ -173,34 +175,16 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
         let adjustedAvg = calculateAdjustedAverage(ratings, userName, itemToPredict);
         console.log("Initial predicted value: " + adjustedAvg);
         console.log("Final Predicted Value: " + adjustedAvg);
-        console.log(" ");
         return adjustedAvg;
+        // console.log("Initial predicted value: " + userAvgs[userName]);
+        // console.log("Final Predicted Value: " + userAvgs[userName]);
+        // return userAvgs[userName];
     }
 
     console.log("Initial predicted value: " + sumNum / sumDenom);
     console.log("Final Predicted Value: " + sumNum / sumDenom);
     sumNeighbour+=adjustedSize;
     return (sumNum / sumDenom);
-}
-
-function calculateMAE(predictions, actualRatings) {
-    let errorSum = 0;
-    let totalCount = 0;
-  
-    for (let user in predictions) {
-      for (let item in predictions[user]) {
-        if (actualRatings[user] && actualRatings[user][item] !== undefined) {
-          let predictedRating = predictions[user][item];
-          let actualRating = actualRatings[user][item];
-          errorSum += Math.abs(predictedRating - actualRating);
-          totalCount++;
-        }
-      }
-    }
-
-    if (totalCount === 0) return 0;
-
-    return errorSum/totalCount;
 }
 
 function calculateAdjustedAverage(ratings, userName, excludeItem) {
