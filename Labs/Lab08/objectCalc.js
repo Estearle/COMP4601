@@ -160,11 +160,7 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
     console.log(`Predicting for user: ${userName}`);
     console.log(`Predicting for item: ${itemToPredict}`);
     console.log(`Found ${adjustedSize} valid neighbours:`);
-    if (adjustedSize === 0) {
-        noNeighbour++;
-    } else {
-        sumNeighbour+=adjustedSize;
-    }
+
     // Go through the sorted array and calculate the weighted sum
     sorted.forEach((sim, index) => {
         console.log(`${index + 1}. Item ${sim.item} sim=${sim.similarity}`);
@@ -172,14 +168,18 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
         sumDenom += sim.similarity;
     });
 
-    console.log("Initial predicted value: " + sumNum / sumDenom);
-    if (sumDenom === 0) {
-        console.log("Final Predicted Value: " + userAvgs[userName]);
+    if (sumDenom === 0 || adjustedSize === 0) {
+        noNeighbour++;
+        let adjustedAvg = calculateAdjustedAverage(ratings, userName, itemToPredict);
+        console.log("Initial predicted value: " + adjustedAvg);
+        console.log("Final Predicted Value: " + adjustedAvg);
         console.log(" ");
-        return userAvgs[userName];
+        return adjustedAvg;
     }
 
+    console.log("Initial predicted value: " + sumNum / sumDenom);
     console.log("Final Predicted Value: " + sumNum / sumDenom);
+    sumNeighbour+=adjustedSize;
     return (sumNum / sumDenom);
 }
 
@@ -201,4 +201,21 @@ function calculateMAE(predictions, actualRatings) {
     if (totalCount === 0) return 0;
 
     return errorSum/totalCount;
+}
+
+function calculateAdjustedAverage(ratings, userName, excludeItem) {
+    let sum = 0;
+    let count = 0;
+    for (let item in ratings[userName]) {
+        if (item !== excludeItem && ratings[userName][item] !== 0) {
+            sum += ratings[userName][item];
+            count++;
+        }
+    }
+    // Calculate the average rating for the user
+    if (count === 0) {
+        return 0;
+    } else {
+        return sum / count;
+    }
 }
