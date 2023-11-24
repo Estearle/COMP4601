@@ -8,8 +8,8 @@ let NEIGHBOURHOOD_SIZE = 5;
 //read txt file
 (async () => {
     try {
-        // let data = await fs.readFile('test.txt','utf8')
-        let data = await fs.readFile('parsed-data-trimmed.txt', 'utf8');
+        let data = await fs.readFile('test.txt','utf8')
+        // let data = await fs.readFile('parsed-data-trimmed.txt', 'utf8');
         let knownPos = [];
         let avg = [];
         let lines = data.trim().split('\n');
@@ -107,6 +107,7 @@ function simCalculation(wholeMatrix, row, col, avg) {
 
         }
     }
+    console.log(result);
     return result;
 }
 
@@ -115,6 +116,7 @@ function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, av
     let sortedSimilarities = Object.keys(similarities)
         .map(key => ({ index: parseInt(key.split(',')[1]), similarity: similarities[key] }))
         .filter(sim => sim.index !== itemIndex) // Exclude similarity with the item itself
+        .filter(sim => sim.similarity > 0) // Exclude similarity scores of less than 0
         .sort((a, b) => b.similarity - a.similarity)
 
     // use as many neighbours as possible
@@ -124,18 +126,30 @@ function calculatePredictedRating(userIndex, itemIndex, similarities, matrix, av
     let adjustedSize = Math.min(sortedSimilarities.length, neighbourhoodSize);
     let sorted = sortedSimilarities.slice(0, adjustedSize);
 
+    console.log("Predicting for user: " + userIndex);
+    console.log("Predicting for item: " + itemIndex);
+    console.log("Found " + adjustedSize + " valid neighbours: ");
+    // console.log(sorted);
+    let index = 1;
+
     sorted.forEach(sim => {
-        if (matrix[userIndex][sim.index] !== 0 && sim.similarity > 0) {
+        if (matrix[userIndex][sim.index] !== 0/* && sim.similarity > 0*/) {
+            console.log(index + ". " + itemIndex + " " + sim.index + " sim=" + sim.similarity);
+            index++;
             sumNum += sim.similarity * matrix[userIndex][sim.index];
             sumDenom += sim.similarity;
         }
     });
-
+    
+    console.log("Initial predicted value: " + sumNum / sumDenom);
     // If there are no similar items with a positive similarity, return the user's average rating
     if (sumDenom === 0) {
+        console.log("Final Predicted Value: " + avg[userIndex]);
+        console.log(" ");
         return avg[userIndex];
     }
-
+    console.log("Final Predicted Value: " + sumNum / sumDenom);
+    console.log(" ");
     return (sumNum / sumDenom);
 }
 
