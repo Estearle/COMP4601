@@ -112,24 +112,24 @@ let sumNeighbour = 0;
     });
 
 function calculateSimilarity(ratings, userAvgs, itemA, itemB, excludeUser) {
-    let sumOfProducts = 0;
-    let sumOfSquaresA = 0;
-    let sumOfSquaresB = 0;
+    let product = 0;
+    let sumA = 0;
+    let sumB = 0;
 
     for (let user in ratings) {
         if (user === excludeUser) continue; // Skip the user for whom we're calculating similarities
         if (ratings[user][itemA] === 0 || ratings[user][itemB] === 0) continue;
 
-        let deviationA = ratings[user][itemA] - userAvgs[user];
-        let deviationB = ratings[user][itemB] - userAvgs[user];
-        sumOfProducts += deviationA * deviationB;
-        sumOfSquaresA += deviationA * deviationA;
-        sumOfSquaresB += deviationB * deviationB;
+        let a = ratings[user][itemA] - userAvgs[user];
+        let b = ratings[user][itemB] - userAvgs[user];
+        product += a * b;
+        sumA += a * a;
+        sumB += b * b;
 
     }
 
-    if (sumOfSquaresA === 0 || sumOfSquaresB === 0) return 0;
-    return sumOfProducts / (Math.sqrt(sumOfSquaresA) * Math.sqrt(sumOfSquaresB));
+    if (sumA === 0 || sumB === 0) return 0;
+    return product / (Math.sqrt(sumA) * Math.sqrt(sumB));
 }
 
 function calculatePredictedRating(userName, itemToPredict, allSimilarities, ratings, userAvgs, neighbourhoodSize) {
