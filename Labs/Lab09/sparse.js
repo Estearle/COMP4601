@@ -1,5 +1,9 @@
 const fs = require("fs").promises;
 
+
+let PATH_LENGTH = 3;
+let ratings = {};
+
 //read txt file
 (async () => {
     try {
@@ -47,53 +51,7 @@ const fs = require("fs").promises;
 
     .then(() => {
 
-        // Calculate similarity scores for each user
-        for (let user in ratings) {
-            allSimilarities[user] = {};
-            for (let itemA in ratings[user]) {
-                if (ratings[user][itemA] === 0) continue; // Skip if the user has not rated the item
-    
-                for (let itemB in ratings[user]) {
-                    if (itemA === itemB || ratings[user][itemB] === 0) continue; // Skip same item or not rated
-    
-                    // Calculate the similarity between itemA and itemB for the current user
-                    let similarity = calculateSimilarity(ratings, userAvgs, itemA, itemB, user);
-                    if (!allSimilarities[user][itemA]) allSimilarities[user][itemA] = {};
-                    allSimilarities[user][itemA][itemB] = similarity;
-
-                }
-
-                let predicted = calculatePredictedRating(user, itemA, allSimilarities, ratings, userAvgs, NEIGHBOURHOOD_SIZE);
-                if (predicted < 1) {
-                    underPred++;
-                } else if (predicted > 5) {
-                    overPred++;
-                }
-                errorSum += Math.abs(predicted - ratings[user][itemA]);            
-                totalPred++;
-                // Update the predictions object with the predicted rating, not the original matrix
-                // predictions[user] = {};
-                // predictions[user][itemA] = predicted;
-
-            }
-        }
-
-        // for (let prediction of predictions) {
-        //     let userIndex = prediction.user;
-        //     let itemIndex = prediction.item;
-        //     if (userIndex && itemIndex) {
-        //         ratings[userIndex][itemIndex] = prediction.predictedRating;
-        //     }
-        // }
-        console.log("");
-        console.log("Item-based, top 5 neighbours");
-        console.log("Total predictions: " + totalPred);
-        console.log("Total under predictions (< 1): " + underPred);
-        console.log("Total over predictions (> 5): " + overPred);
-        console.log("Number of cases with no valid neighbours: " + noNeighbour);
-        console.log("Average neighbours used: " + sumNeighbour/totalPred);
-        console.log("MAE = " + errorSum/totalPred);
-        console.timeEnd("timerMAE");
+        
 
     })
 
