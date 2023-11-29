@@ -35,8 +35,16 @@ let ratings = {};
 })()
 
     .then(() => {
-
         
+        for (let item in ratings['User1']) {
+            if (item === 1) {
+                for (let user in ratings) {
+                    if (ratings[user][item] === 1) {
+
+                    }
+                }
+            }
+        }
 
     })
 
