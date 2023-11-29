@@ -9,7 +9,7 @@ let ratings = {};
     try {
         console.time("timerMAE");
         // Read the file data
-        let data = await fs.readFile('test.txt', 'utf8');
+        let data = await fs.readFile('test2.txt', 'utf8');
         let lines = data.trim().split('\n');
         let numUsers = parseInt(lines[0].split(' ')[0], 10);
         let users = lines[1].trim().split(' ');
@@ -27,7 +27,7 @@ let ratings = {};
             }
         }
 
-        console.log(ratings);
+        // console.log(ratings);
     }
     catch (err) {
         console.log(err);
@@ -35,17 +35,37 @@ let ratings = {};
 })()
 
     .then(() => {
-        
+        let userSet = new Set();
+        let itemSet = new Set();
+        let recItem = {};
         for (let item in ratings['User1']) {
-            if (item === 1) {
+            // console.log(ratings['User1'][item])
+            if (ratings['User1'][item] === 1) {
+                itemSet.add(item)
                 for (let user in ratings) {
-                    if (ratings[user][item] === 1) {
-
+                    if (ratings[user][item] === 1 && user !== 'User1') {
+                        userSet.add(user)
                     }
                 }
             }
         }
-
+        console.log(userSet)
+        userSet.forEach(function (user) {
+            for (let item in ratings[user]) {
+                console.log(user)
+                if (ratings[user][item] === 1 && !itemSet.has(item)) {
+                    console.log(item)
+                    if (!recItem[item]) {
+                        recItem[item] = 1;
+                    }
+                    else {
+                        recItem[item]++;
+                    }
+                }
+            }
+        })
+      
+        console.log(recItem)
     })
 
     .catch(error => {
