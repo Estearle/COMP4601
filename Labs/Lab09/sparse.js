@@ -8,14 +8,14 @@ let ratings = {};
 (async () => {
     try {
         // Read the file data
-        let data = await fs.readFile('test4.txt', 'utf8');
+        let data = await fs.readFile('test5.txt', 'utf8');
         let lines = data.trim().split('\n');
         let numUsers = parseInt(lines[0].split(' ')[0], 10);
         let users = lines[1].trim().split(' ');
         let items = lines[2].trim().split(' ');
         let matrix = lines.slice(3).map(row => row.trim().split(' ').map(Number));
 
-        // Parse the ratings and calculate averages
+        // Parse the ratings 
         for (let i = 0; i < numUsers; i++) {
             let userName = users[i];
             ratings[userName] = {};
@@ -37,7 +37,6 @@ let ratings = {};
         let itemSet = new Set();
         let recItem = {};
         for (let item in ratings['User1']) {
-            // console.log(ratings['User1'][item])
             if (ratings['User1'][item] === 1) {
                 itemSet.add(item)
             }
@@ -60,6 +59,8 @@ let ratings = {};
             }
         })
       
+        // sort it in descending order
+        recItem = Object.entries(recItem).sort((a,b)=>b[1]-a[1])
         console.log(recItem)
     })
 
