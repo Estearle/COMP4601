@@ -1,0 +1,330 @@
+
+
+Predicting for user: Alice
+Predicting for item: Item2
+Found 1 valid neighbours:
+1. User User2 sim=0.19364497953170162
+Initial predicted value: 2.07
+Final predicted value: 2.07
+
+
+Predicting for user: Alice
+Predicting for item: Item3
+Found 2 valid neighbours:
+1. User User1 sim=0.2546381603877155
+2. User User3 sim=0.05643326479831018
+Initial predicted value: 1.35
+Final predicted value: 1.35
+
+
+Predicting for user: Alice
+Predicting for item: Item4
+Found 1 valid neighbours:
+1. User User2 sim=0.35141624998680915
+Initial predicted value: 1.93
+Final predicted value: 1.93
+
+
+Predicting for user: Alice
+Predicting for item: Item5
+Found 1 valid neighbours:
+1. User User2 sim=0.07238778637320958
+Initial predicted value: 4.07
+Final predicted value: 4.07
+
+
+Predicting for user: Alice
+Predicting for item: Item7
+No valid neighbours.
+Initial predicted value: 2.857142857142857
+Final predicted value: 2.857142857142857
+
+
+Predicting for user: Alice
+Predicting for item: Item8
+Found 1 valid neighbours:
+1. User User2 sim=0.35790640572035975
+Initial predicted value: 3.36
+Final predicted value: 3.36
+
+
+Predicting for user: Alice
+Predicting for item: Item9
+Found 1 valid neighbours:
+1. User User2 sim=0.21353706957069235
+Initial predicted value: 3.21
+Final predicted value: 3.21
+
+
+Predicting for user: Alice
+Predicting for item: Item10
+No valid neighbours.
+Initial predicted value: 2.5714285714285716
+Final predicted value: 2.5714285714285716
+
+
+Predicting for user: User1
+Predicting for item: Item1
+Found 2 valid neighbours:
+1. User User3 sim=0.48653363279984113
+2. User User2 sim=0.43852900965351455
+Initial predicted value: 3.09
+Final predicted value: 3.09
+
+
+Predicting for user: User1
+Predicting for item: Item3
+Found 2 valid neighbours:
+1. User User4 sim=0.3681009647756401
+2. User Alice sim=0.1643989873053573
+Initial predicted value: 4.55
+Final predicted value: 4.55
+
+
+Predicting for user: User1
+Predicting for item: Item4
+Found 1 valid neighbours:
+1. User User2 sim=0.5262348115842175
+Initial predicted value: 2.36
+Final predicted value: 2.36
+
+
+Predicting for user: User1
+Predicting for item: Item5
+Found 2 valid neighbours:
+1. User User2 sim=0.5656854249492379
+2. User User3 sim=0.49490154195747266
+Initial predicted value: 4.12
+Final predicted value: 4.12
+
+
+Predicting for user: User1
+Predicting for item: Item6
+Found 1 valid neighbours:
+1. User User3 sim=0.5773502691896258
+Initial predicted value: 3.00
+Final predicted value: 3.00
+
+
+Predicting for user: User1
+Predicting for item: Item8
+Found 1 valid neighbours:
+1. User User2 sim=0.43852900965351455
+Initial predicted value: 3.36
+Final predicted value: 3.36
+
+
+Predicting for user: User1
+Predicting for item: Item9
+Found 2 valid neighbours:
+1. User User3 sim=0.49490154195747266
+2. User User2 sim=0.43852900965351455
+Initial predicted value: 3.62
+Final predicted value: 3.62
+
+
+Predicting for user: User1
+Predicting for item: Item10
+Found 1 valid neighbours:
+1. User User3 sim=0.7258661863112976
+Initial predicted value: 2.71
+Final predicted value: 2.71
+
+
+Predicting for user: User2
+Predicting for item: Item1
+Found 2 valid neighbours:
+1. User User3 sim=0.6642111641550715
+2. User User1 sim=0.3886563198590068
+Initial predicted value: 3.47
+Final predicted value: 3.47
+
+
+Predicting for user: User2
+Predicting for item: Item2
+Found 2 valid neighbours:
+1. User User3 sim=0.5756496756010617
+2. User Alice sim=0.2115279271259048
+Initial predicted value: 3.67
+Final predicted value: 3.67
+
+
+Predicting for user: User2
+Predicting for item: Item4
+Found 2 valid neighbours:
+1. User User1 sim=0.5398733682331485
+2. User Alice sim=0.343282132674204
+Initial predicted value: 4.18
+Final predicted value: 4.18
+
+
+Predicting for user: User2
+Predicting for item: Item5
+Found 2 valid neighbours:
+1. User User3 sim=0.4240944648399856
+2. User User1 sim=0.4070865776470484
+Initial predicted value: 3.86
+Final predicted value: 3.86
+
+
+Predicting for user: User2
+Predicting for item: Item6
+Found 2 valid neighbours:
+1. User User3 sim=0.5756496756010617
+2. User User1 sim=0.5609681940050741
+Initial predicted value: 3.14
+Final predicted value: 3.14
+
+
+Predicting for user: User2
+Predicting for item: Item7
+Found 2 valid neighbours:
+1. User User3 sim=0.6597361582944737
+2. User User4 sim=0.03618851819375124
+Initial predicted value: 3.80
+Final predicted value: 3.80
+
+
+Predicting for user: User2
+Predicting for item: Item8
+Found 2 valid neighbours:
+1. User User1 sim=0.3886563198590068
+2. User Alice sim=0.34660048557739337
+Initial predicted value: 2.73
+Final predicted value: 2.73
+
+
+Predicting for user: User2
+Predicting for item: Item9
+Found 2 valid neighbours:
+1. User User3 sim=0.6888467201936646
+2. User User1 sim=0.3886563198590068
+Initial predicted value: 4.11
+Final predicted value: 4.11
+
+
+Predicting for user: User3
+Predicting for item: Item1
+Found 2 valid neighbours:
+1. User User2 sim=0.6172133998483676
+2. User User1 sim=0.4855177032275237
+Initial predicted value: 3.33
+Final predicted value: 3.33
+
+
+Predicting for user: User3
+Predicting for item: Item2
+Found 1 valid neighbours:
+1. User User2 sim=0.6172133998483676
+Initial predicted value: 2.50
+Final predicted value: 2.50
+
+
+Predicting for user: User3
+Predicting for item: Item3
+Found 2 valid neighbours:
+1. User User1 sim=0.04404923050107787
+2. User Alice sim=0.03417181210684179
+Initial predicted value: 3.39
+Final predicted value: 3.39
+
+
+Predicting for user: User3
+Predicting for item: Item5
+Found 2 valid neighbours:
+1. User User1 sim=0.493520142735533
+2. User User2 sim=0.13453455879926257
+Initial predicted value: 3.28
+Final predicted value: 3.28
+
+
+Predicting for user: User3
+Predicting for item: Item6
+Found 2 valid neighbours:
+1. User User2 sim=0.6172133998483676
+2. User User1 sim=0.566393860323831
+Initial predicted value: 2.32
+Final predicted value: 2.32
+
+
+Predicting for user: User3
+Predicting for item: Item7
+Found 1 valid neighbours:
+1. User User2 sim=0.7844645405527361
+Initial predicted value: 1.50
+Final predicted value: 1.50
+
+
+Predicting for user: User3
+Predicting for item: Item9
+Found 2 valid neighbours:
+1. User User2 sim=0.5292561240249632
+2. User User1 sim=0.493520142735533
+Initial predicted value: 3.18
+Final predicted value: 3.18
+
+
+Predicting for user: User3
+Predicting for item: Item10
+Found 1 valid neighbours:
+1. User User1 sim=0.6499555709619101
+Initial predicted value: 4.13
+Final predicted value: 4.13
+
+
+Predicting for user: User4
+Predicting for item: Item1
+Found 1 valid neighbours:
+1. User User1 sim=0.02449612226456666
+Initial predicted value: 3.84
+Final predicted value: 3.84
+
+
+Predicting for user: User4
+Predicting for item: Item2
+No valid neighbours.
+Initial predicted value: 3.142857142857143
+Final predicted value: 3.142857142857143
+
+
+Predicting for user: User4
+Predicting for item: Item3
+Found 1 valid neighbours:
+1. User User1 sim=0.2156238786145562
+Initial predicted value: 2.27
+Final predicted value: 2.27
+
+
+Predicting for user: User4
+Predicting for item: Item4
+No valid neighbours.
+Initial predicted value: 3.5714285714285716
+Final predicted value: 3.5714285714285716
+
+
+Predicting for user: User4
+Predicting for item: Item6
+No valid neighbours.
+Initial predicted value: 3.5714285714285716
+Final predicted value: 3.5714285714285716
+
+
+Predicting for user: User4
+Predicting for item: Item7
+No valid neighbours.
+Initial predicted value: 3.142857142857143
+Final predicted value: 3.142857142857143
+
+
+Predicting for user: User4
+Predicting for item: Item8
+No valid neighbours.
+Initial predicted value: 3.142857142857143
+Final predicted value: 3.142857142857143
+
+
+Predicting for user: User4
+Predicting for item: Item9
+No valid neighbours.
+Initial predicted value: 3.5714285714285716
+Final predicted value: 3.5714285714285716
