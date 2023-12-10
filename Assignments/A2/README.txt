@@ -1,29 +1,3 @@
-Lab 08
+Assignment 2
 Rachel Wong 101184274
 Earle Estrella 100907269
-
-We used item-based recommendation algorithms to generate the MAE output.
-It took ~94s to generate the output on console and ~66s on txt file (instruction:node objectCalc.js>testResult.txt).
-
-Discuss how you have implemented the ‘leave one out’ strategy:
-    1. We parse the ratings with the corresponding users and items into an object variable called ratings.
-    2. We iterate over the ratings obj to find a pair of non-zero ratings items (itemA and itemB)from the same user. 
-    3. We compute the similarities of itemA and the rest of the non-zero rating items from the same user. 
-    4. We predict itemA based on the similarities calculations from step 3
-    
-Discuss how you have computed your predictions:
-    1. We calculated all the similaries between the item we are going to predict(itemA) and the rest of the non-zero rating items from the same user
-    2. Construct an array with the similaries calculations and corresponding items. Append only positive similarities into the array
-    3. Sort it in descending order.
-    4. Get the min of the length of the sorted array and 5(max neighbourhood size that we can get)
-    5. Go through the sorted array and calculate the weighted sum 
-    6. If the sum from 5 is 0, return the average rating score of the user without the current rating that we are predicting. Otherwise, we compute the predicted value.
-
-Discuss how you have computed the mean absolute error over all of your predicted ratings:
-    1. The mean absolute error (MAE) was calculated after a predicted rating was calculated.
-    2. Once a predicted rating was calculated, the absolute difference between this calculated rating and the actual rating by the user to the item is taken and added to a variable errorSum
-    3. Also increment the number of predictions by one to keep track of total predictions made
-    4. At the end of the program when the output summary of the program is being made, take the errorSum and divide it by the total number of predictions made to calculate the MAE.
-
-Link: https://www.youtube.com/watch?v=TtcxqlRcvFQ
-
