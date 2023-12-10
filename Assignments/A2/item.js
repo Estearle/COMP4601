@@ -4,6 +4,7 @@ let allSimilarities = {};
 let NEIGHBOURHOOD_SIZE = 2;
 let THRESOLD_VAL = 0;
 let threshold = false;
+let negatives = false;
 let ratings = {};
 let userAvgs = {};
 let totalPred = 0;
@@ -92,7 +93,7 @@ let errorSum = 0;
         }
 
         console.log("");
-        
+
         if (threshold) {
             console.log("Item-based, has similarity threshold of " + THRESOLD_VAL +  ", top " + NEIGHBOURHOOD_SIZE + " neighbours");
         } else {
@@ -142,24 +143,37 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
     // Build an array of similarities and corresponding items
     for (let item in allSimilarities[userName][itemToPredict]) {
         let similarity = allSimilarities[userName][itemToPredict][item];
-        if (!threshold) {
+        if (!threshold) { // If no threshold then take in all possible values
             sortedSimilarities.push({
                 item: item,
                 similarity: similarity
             });
         } else {
-            if (similarity >= THRESOLD_VAL) { // Considering only positive similarities
-                sortedSimilarities.push({
-                    item: item,
-                    similarity: similarity
-                });
+            if (THRESOLD_VAL === 0) {
+                if (similarity > THRESOLD_VAL) { // Considering only positive similarities
+                    sortedSimilarities.push({
+                        item: item,
+                        similarity: similarity
+                    });
+                }
+            } else {
+                if (Math.abs(similarity) >= THRESOLD_VAL) { // If a threshold exists, take the absolute similarity for comparison
+                    sortedSimilarities.push({
+                        item: item,
+                        similarity: similarity // Include negative values
+                    });
+                }
             }
         }
 
     }
 
     // Sort by similarity score
-    sortedSimilarities.sort((a, b) => b.similarity - a.similarity);
+    if (negatives) {
+        sortedSimilarities.sort((a, b) => Math.abs(b.similarity) - Math.abs(a.similarity));
+    } else {
+        sortedSimilarities.sort((a, b) => b.similarity - a.similarity);
+    }
 
     // Use as many neighbours as possible, limiting to neighbourhood size
     let sumNum = 0;
