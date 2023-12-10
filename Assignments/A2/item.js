@@ -201,12 +201,12 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
     console.log("Initial predicted value: " + sumNum / sumDenom);
     if (sumNum / sumDenom < 1) {
         underPred++;
-        console.log("Final Predicted Value: " + 5);
+        console.log("Final Predicted Value: " + 1);
         sumNeighbour+=adjustedSize;
         return (1);
     } else if (sumNum / sumDenom > 5) {
         overPred++;
-        console.log("Final Predicted Value: " + 1);
+        console.log("Final Predicted Value: " + 5);
         sumNeighbour+=adjustedSize;
         return (5);
     }
