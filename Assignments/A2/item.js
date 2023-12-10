@@ -92,6 +92,7 @@ let errorSum = 0;
         }
 
         console.log("");
+        
         if (threshold) {
             console.log("Item-based, has similarity threshold of " + THRESOLD_VAL +  ", top " + NEIGHBOURHOOD_SIZE + " neighbours");
         } else {
