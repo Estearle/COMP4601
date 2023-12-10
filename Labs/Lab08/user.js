@@ -17,7 +17,7 @@ let errorSum = 0;
     try {
         console.time("timerMAE");
         // Read the file data
-        let data = await fs.readFile('test3.txt', 'utf8');
+        let data = await fs.readFile('assignment2-data.txt', 'utf8');
         let lines = data.trim().split('\n');
         let numUsers = parseInt(lines[0].split(' ')[0], 10);
         let users = lines[1].trim().split(' ');
