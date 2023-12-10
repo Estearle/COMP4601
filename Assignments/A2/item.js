@@ -1,9 +1,9 @@
 const fs = require("fs").promises;
 
 let allSimilarities = {};
-let NEIGHBOURHOOD_SIZE = 100;
+let NEIGHBOURHOOD_SIZE = 200;
 let THRESOLD_VAL = 0;
-let threshold = false;
+let threshold = true;
 let negatives = false;
 let ratings = {};
 let userAvgs = {};
@@ -179,10 +179,11 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
     console.log(`Predicting for user: ${userName}`);
     console.log(`Predicting for item: ${itemToPredict}`);
     console.log(`Found ${adjustedSize} valid neighbours:`);
+    console.log(`Initial Rating of ${ratings[userName][itemToPredict]}`)
 
     // Go through the sorted array and calculate the weighted sum
     sorted.forEach((sim, index) => {
-        // console.log(`${index + 1}. Item ${sim.item} sim=${sim.similarity}`);
+        console.log(`${index + 1}. Item ${sim.item} sim=${sim.similarity}`);
         sumNum += sim.similarity * (ratings[userName][sim.item]);
         sumDenom += sim.similarity;
     });
@@ -204,11 +205,11 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
     if (sumNum / sumDenom < 1) {
         underPred++;
         console.log("Final Predicted Value: " + 1);
-        return (1);
+        return (Number(1));
     } else if (sumNum / sumDenom > 5) {
         overPred++;
         console.log("Final Predicted Value: " + 5);
-        return (5);
+        return (Number(5));
     }
     console.log("Final Predicted Value: " + sumNum / sumDenom);
 
