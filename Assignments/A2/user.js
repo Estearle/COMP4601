@@ -71,7 +71,6 @@ let errorSum = 0;
                     if (userB !== user) {
                         if (ratings[userB][itemA] === 0) continue;
                         let similarity = calculateSimilarity(ratings, userAvgs, user, userB, itemA);
-                        // console.log(user, userB, similarity)
                         if (!allSimilarities[user][itemA]) allSimilarities[user][itemA] = {};
                         allSimilarities[user][itemA][userB] = similarity;
                     }
