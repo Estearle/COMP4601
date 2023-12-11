@@ -99,7 +99,7 @@ let errorSum = 0;
         //     }
         // }
         console.log("");
-        console.log("User-based, top 2 neighbours");
+        console.log("User-based, top 5 neighbours");
         console.log("Total predictions: " + totalPred);
         console.log("Total under predictions (< 1): " + underPred);
         console.log("Total over predictions (> 5): " + overPred);
@@ -167,7 +167,7 @@ function calculatePredictedRating(userName, itemToPredict, allSimilarities, rati
     // sortedSimilarities.sort((a, b) => Math.abs(b.similarity) - Math.abs(a.similarity));
     let adjustedSize = Math.min(sortedSimilarities.length, neighbourhoodSize);
     let topSimScores = sortedSimilarities.slice(0, adjustedSize);
-    console.log(sortedSimilarities)
+    // console.log(sortedSimilarities)
     let num = 0;
     let denom = 0;
     // console.log("TOPSIMSCORE"+topSimScores)
